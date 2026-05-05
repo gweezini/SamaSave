@@ -119,7 +119,7 @@ async def get_ai_reason(tx: TransactionRequest, score: int):
         reason = response.text.strip().split("\n")[0]
         return reason if reason else "Budget says no, but your fingers said 'Add to Cart'. Smh."
     except:
-        return "Your wallet is currently in a committed relationship with 'Regret'. 🙄"
+        return "Your wallet is currently in a committed relationship with 'Regret'."
 
 # =========================
 # CORE ENDPOINT
