@@ -1,2 +1,9 @@
 backend/.env
 backend/gcp-key.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+env/
+venv/
