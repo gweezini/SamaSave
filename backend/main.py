@@ -15,7 +15,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("SamaSave-Backend")
 
 # Security: Google Credentials
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "backend/gcp-key.json"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(BASE_DIR, "gcp-key.json")
 
 PROJECT_ID = os.getenv("GCP_PROJECT_ID")
 LOCATION = os.getenv("GCP_LOCATION")
