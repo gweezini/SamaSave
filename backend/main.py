@@ -35,6 +35,7 @@ app = FastAPI(title="SamaSave AI Engine v1.2")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -149,10 +150,14 @@ async def check_transaction(request: TransactionRequest):
 
 @app.get("/api/v1/leaderboard")
 async def get_leaderboard():
+    """
+    Returns the real-time resilience score of users.
+    Later, we will replace this mock data with an SQL query.
+    """
     return [
-        {"rank": 1, "name": "Michelle", "score": 98, "reward": "+0.5% p.a."},
-        {"rank": 2, "name": "Xinying", "score": 85, "reward": "+0.2% p.a."},
-        {"rank": 3, "name": "Zini", "score": 42, "reward": "Penalty Applied"}
+        {"id": 1, "name": "Zini", "score": 98, "status": "Safe 🛡️"},
+        {"id": 3, "name": "Xin Ying", "score": 95, "status": "Safe 🛡️"},
+        {"id": 2, "name": "Michelle", "score": 85, "status": "Warning ⚠️"}
     ]
 
 @app.get("/")
