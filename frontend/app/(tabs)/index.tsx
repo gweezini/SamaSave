@@ -19,9 +19,9 @@ export default function App() {
   // ==========================================
   // CORE FINANCIAL STATES
   // ==========================================
-  const [totalBalance, setTotalBalance] = useState(1500.00); // Actual total balance for Home
-  const [samaSaveBalance, setSamaSaveBalance] = useState(15.50); // Accumulated penalty in Vault
-  const [aiMode, setAiMode] = useState('Strict'); // AI Sensitivity Mode
+  const [totalBalance, setTotalBalance] = useState(1500.00); 
+  const [samaSaveBalance, setSamaSaveBalance] = useState(15.50); 
+  const [aiMode, setAiMode] = useState('Strict'); 
   
   // Initial squad list
   const [squads, setSquads] = useState([
@@ -158,21 +158,18 @@ export default function App() {
   // REAL-TIME DEDUCTION LOGIC
   // ==========================================
   const handleProceedTransaction = () => {
-    const itemCost = 50.00; // Simulated transaction amount
+    const itemCost = 50.00; 
 
     if (aiMode === 'Gentle') {
-      // No penalty, only deduct base cost
       setTotalBalance((prev: number) => prev - itemCost);
       Alert.alert("✅ Action Taken", `Transaction approved. RM ${itemCost.toFixed(2)} deducted from your account.`, [{ text: "OK", onPress: () => setShowWarning(false) }]);
     
     } else if (aiMode === 'Strict') {
-      // Deduct base cost + RM 5 penalty, store penalty in Vault
       setTotalBalance((prev: number) => prev - (itemCost + 5.00));
       setSamaSaveBalance((prev: number) => prev + 5.00); 
       Alert.alert("💸 Action Taken", `Transaction approved. RM ${(itemCost + 5).toFixed(2)} deducted (Includes RM 5.00 penalty sent to Vault).`, [{ text: "OK", onPress: () => setShowWarning(false) }]);
     
     } else {
-      // Deduct base cost + RM 10 penalty, store penalty in Vault
       setTotalBalance((prev: number) => prev - (itemCost + 10.00));
       setSamaSaveBalance((prev: number) => prev + 10.00); 
       Alert.alert("💸 Action Taken", `Transaction approved. RM ${(itemCost + 10).toFixed(2)} deducted. Penalty recorded and broadcasted!`, [{ text: "OK", onPress: () => setShowWarning(false) }]);
@@ -186,7 +183,10 @@ export default function App() {
     return (
       <View style={styles.goalContainer}>
         <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-          <Text style={styles.goalTitle}>{goal.title} 🎯</Text>
+          {/* Allow text to wrap to the next line gracefully without pushing amounts off-screen */}
+          <Text style={[styles.goalTitle, { flex: 1, marginRight: 15, lineHeight: 20 }]}>
+            {goal.title} 🎯
+          </Text>
           <TouchableOpacity 
             onPress={() => { setEditGoalAmount(goal.target.toString()); setShowEditGoalModal(true); }} 
             style={{flexDirection: 'row', alignItems: 'center'}}
@@ -233,7 +233,6 @@ export default function App() {
             <View style={styles.balanceSection}>
               <Text style={styles.balanceLabel}>Total balance</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
-                {/* DYNAMIC HOME BALANCE */}
                 <Text style={styles.balanceAmount}>RM {totalBalance.toFixed(2)}</Text>
                 <Ionicons name="eye-outline" size={20} color="white" style={{ marginLeft: 10 }} />
               </View>
@@ -251,7 +250,7 @@ export default function App() {
             </View>
 
             <View style={styles.cardsContainer}>
-              <View style={[styles.card, styles.mainCard]}><Text style={styles.cardLabel}>Main account</Text><Text style={styles.cardAmount}>RM 80.00</Text></View>
+              <View style={[styles.card, styles.mainCard]}><Text style={styles.cardLabel}>Main account</Text><Text style={styles.cardAmount}>RM {totalBalance.toFixed(2)}</Text></View>
               <View style={[styles.card, styles.pocketCard]}>
                 <Text style={styles.cardLabelBold}>Pockets</Text><Text style={styles.cardSubText}>Earn 3.55% p.a.</Text>
                 <TouchableOpacity style={styles.createButton}><Text style={styles.createButtonText}>Create</Text></TouchableOpacity>
@@ -270,17 +269,14 @@ export default function App() {
               <Text style={styles.dashboardSubtitle}>Who is surviving the impulse?</Text>
             </View>
 
-            {/* DYNAMIC VAULT CARD */}
             <View style={styles.vaultCard}>
               <View style={styles.vaultInfo}>
                 <Text style={styles.vaultTitle}>My SamaSave Vault 🏦</Text>
                 <Text style={styles.vaultSub}>Resilience tax collected</Text>
               </View>
-              {/* DYNAMIC VAULT BALANCE */}
               <Text style={styles.vaultAmount}>RM {samaSaveBalance.toFixed(2)}</Text>
             </View>
 
-            {/* AI Mode Selector */}
             <View style={styles.aiModeContainer}>
               <Text style={styles.sectionTitleSmall}>AI Sensitivity Mode 🤖</Text>
               <View style={styles.modeToggleRow}>
@@ -339,7 +335,6 @@ export default function App() {
                   </View>
                   <View style={styles.divider} />
 
-                  {/* Render Shared Goal Progress Bar */}
                   {renderGoalProgress()}
 
                   {activeSquad === 'Besties' ? (
