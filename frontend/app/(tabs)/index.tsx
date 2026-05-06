@@ -182,19 +182,19 @@ export default function App() {
     
     return (
       <View style={styles.goalContainer}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-          {/* Allow text to wrap to the next line gracefully without pushing amounts off-screen */}
-          <Text style={[styles.goalTitle, { flex: 1, marginRight: 15, lineHeight: 20 }]}>
-            {goal.title} 🎯
-          </Text>
-          <TouchableOpacity 
-            onPress={() => { setEditGoalAmount(goal.target.toString()); setShowEditGoalModal(true); }} 
-            style={{flexDirection: 'row', alignItems: 'center'}}
-          >
-            <Text style={styles.goalAmount}>RM {goal.current} / RM {goal.target}</Text>
-            <MaterialCommunityIcons name="pencil-outline" size={14} color="#22d3ee" style={{marginLeft: 5}} />
-          </TouchableOpacity>
-        </View>
+        {/* Stacked Layout to prevent text squishing */}
+        <Text style={styles.goalTitle}>
+          {goal.title} 🎯
+        </Text>
+        
+        <TouchableOpacity 
+          onPress={() => { setEditGoalAmount(goal.target.toString()); setShowEditGoalModal(true); }} 
+          style={{flexDirection: 'row', alignItems: 'center', marginTop: 8, marginBottom: 4}}
+        >
+          <Text style={styles.goalAmount}>RM {goal.current} / RM {goal.target} per person</Text>
+          <MaterialCommunityIcons name="pencil-outline" size={14} color="#22d3ee" style={{marginLeft: 5}} />
+        </TouchableOpacity>
+
         <View style={styles.progressBarBg}>
           <View style={[styles.progressBarFill, {width: progressPercent}]} />
         </View>
