@@ -8,6 +8,8 @@ export default function App() {
   const [showWarning, setShowWarning] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const [showJoinModal, setShowJoinModal] = useState(false); 
+  const [showDepositModal, setShowDepositModal] = useState(false); 
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [showMembersModal, setShowMembersModal] = useState(false);
   const [showEditGoalModal, setShowEditGoalModal] = useState(false); 
@@ -30,37 +32,42 @@ export default function App() {
     { id: 'JapanTrip', name: '✈️ Japan 2026' }
   ]);
   
-  // Create form states
+  // Form states
   const [squadName, setSquadName] = useState('');
   const [squadGoalAmount, setSquadGoalAmount] = useState(''); 
   const [inviteMichelle, setInviteMichelle] = useState(false);
   const [inviteXinying, setInviteXinying] = useState(false); 
   const [editGoalAmount, setEditGoalAmount] = useState('');
+  const [joinCodeInput, setJoinCodeInput] = useState(''); 
+  const [depositAmount, setDepositAmount] = useState('');
+  const [depositFreq, setDepositFreq] = useState('One-time'); 
 
-  // Dynamic state for members avatars with full names
+  // ==========================================
+  // DYNAMIC MEMBERS & LEADERBOARD 
+  // ==========================================
   const [membersData, setMembersData] = useState<any>({
     Besties: [
-      { id: 'z', name: 'Zini (You)', initial: 'Z', color: '#7c3aed' },
-      { id: 'x', name: 'Xinying', initial: 'X', color: '#f43f5e' },
-      { id: 'm', name: 'Michelle', initial: 'M', color: '#22d3ee' }
+      { id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: 1960, target: 2000, status: 'Safe 🛡️' },
+      { id: 'x', name: 'Xinying', initial: 'X', color: '#f43f5e', saved: 1600, target: 2000, status: 'Safe 🛡️' },
+      { id: 'm', name: 'Michelle', initial: 'M', color: '#22d3ee', saved: 1200, target: 2000, status: 'Warning ⚠️' }
     ],
     Family: [
-      { id: 'z', name: 'Zini (You)', initial: 'Z', color: '#7c3aed' }
+      { id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: 800, target: 3000, status: 'On Track 🎯' }
     ],
     JapanTrip: [
-      { id: 'z', name: 'Zini (You)', initial: 'Z', color: '#7c3aed' }
+      { id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: 4500, target: 8000, status: 'Ready for Sushi 🍣' }
     ]
   });
 
-  // Dynamic shared goals for Sync-Pockets
+  // Dynamic shared goals 
   const [squadGoals, setSquadGoals] = useState<any>({
-    Besties: { title: 'KL Trip Fund', current: 1200, target: 2000 },
-    Family: { title: 'New TV Fund', current: 800, target: 3000 },
-    JapanTrip: { title: 'Osaka Universal Studio', current: 4500, target: 8000 }
+    Besties: { title: 'KL Trip Fund', target: 2000 },
+    Family: { title: 'New TV Fund', target: 3000 },
+    JapanTrip: { title: 'Osaka Universal Studio', target: 8000 }
   });
 
   // Activity feed data
-  const activityData: any = {
+  const [activities, setActivities] = useState<any>({
     Besties: [
       { id: 1, user: 'Michelle', msg: 'paid RM5.50 Sin Tax for 2AM McDonald\'s. 🍔', cat: 'Besties', icon: 'food-hot-dog', color: '#f43f5e' },
       { id: 2, user: 'Xinying', msg: 'avoided a Shopee impulse checkout! +10 Pts. 🛡️', cat: 'Besties', icon: 'shield-star-outline', color: '#22d3ee' },
@@ -73,7 +80,7 @@ export default function App() {
       { id: 2, user: 'Zini', msg: 'saved RM150 for the Osaka Universal Studio! 🎢', cat: 'Japan 2026', icon: 'airplane-takeoff', color: '#22d3ee' },
       { id: 3, user: 'Xinying', msg: 'avoided a Shopee impulse checkout! +10 Pts. 🛡️', cat: 'Besties', icon: 'shield-star-outline', color: '#22d3ee' },
     ]
-  };
+  });
 
   const getJoinCode = () => {
     if (activeSquad === 'Besties') return 'SAMA-BFF-2026';
@@ -91,12 +98,12 @@ export default function App() {
     const newSquadName = `${squadName} ✨`;
     const targetAmount = parseFloat(squadGoalAmount) || 1000; 
     
-    const newMembers = [{ id: 'z', name: 'Zini (You)', initial: 'Z', color: '#7c3aed' }]; 
-    if (inviteMichelle) newMembers.push({ id: 'm', name: 'Michelle', initial: 'M', color: '#22d3ee' });
-    if (inviteXinying) newMembers.push({ id: 'x', name: 'Xinying', initial: 'X', color: '#f43f5e' });
+    const newMembers = [{ id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: targetAmount, target: targetAmount, status: 'Leader 👑' }]; 
+    if (inviteMichelle) newMembers.push({ id: 'm', name: 'Michelle', initial: 'M', color: '#22d3ee', saved: targetAmount * 0.8, target: targetAmount, status: 'Just joined 🐣' });
+    if (inviteXinying) newMembers.push({ id: 'x', name: 'Xinying', initial: 'X', color: '#f43f5e', saved: targetAmount * 0.9, target: targetAmount, status: 'Catching up 🏃' });
 
     setMembersData((prev: any) => ({ ...prev, [newSquadId]: newMembers }));
-    setSquadGoals((prev: any) => ({ ...prev, [newSquadId]: { title: squadName, current: 0, target: targetAmount } }));
+    setSquadGoals((prev: any) => ({ ...prev, [newSquadId]: { title: squadName, target: targetAmount } }));
     setSquads([...squads, { id: newSquadId, name: newSquadName }]);
     setActiveSquad(newSquadId);
     
@@ -105,6 +112,43 @@ export default function App() {
     setSquadGoalAmount('');
     setInviteMichelle(false);
     setInviteXinying(false);
+  };
+
+  const handleJoinSquad = () => {
+    const code = joinCodeInput.trim();
+    if (!code) {
+      Alert.alert("Error", "Please enter a valid join code!");
+      return;
+    }
+
+    const parts = code.split('-');
+    let dynamicName = "New Squad";
+    
+    if (parts.length >= 2) {
+      const rawName = parts[1];
+      dynamicName = rawName.charAt(0).toUpperCase() + rawName.slice(1).toLowerCase();
+    } else {
+      dynamicName = code;
+    }
+
+    const newSquadId = 'JoinedSquad' + Date.now(); 
+    const newSquadName = `🚀 ${dynamicName} Trip`; 
+    const targetAmount = 15000; 
+
+    const newMembers = [
+      { id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: 14700, target: targetAmount, status: 'Safe 🛡️' }, 
+      { id: 'a', name: 'Ahmad', initial: 'A', color: '#f59e0b', saved: 13500, target: targetAmount, status: 'Safe 🛡️' }, 
+      { id: 's', name: 'Sarah', initial: 'S', color: '#10b981', saved: 9000, target: targetAmount, status: 'Catching up 🏃' } 
+    ];
+
+    setMembersData((prev: any) => ({ ...prev, [newSquadId]: newMembers }));
+    setSquadGoals((prev: any) => ({ ...prev, [newSquadId]: { title: `${dynamicName} trip Fund`, target: targetAmount } }));
+    setSquads((prev: any) => [{ id: newSquadId, name: newSquadName }, ...prev]);
+    setActiveSquad(newSquadId);
+    
+    setShowJoinModal(false);
+    setJoinCodeInput('');
+    Alert.alert("Success!", `You have successfully joined ${newSquadName}!`);
   };
 
   const handleEditGoal = () => {
@@ -118,12 +162,60 @@ export default function App() {
     setEditGoalAmount('');
   };
 
-  const copyToClipboard = (code: string) => {
-    Clipboard.setString(code);
-    Alert.alert("Code Copied! 📋", `${code} is ready.`);
+  const handleDeposit = () => {
+    const amount = parseFloat(depositAmount);
+    if (!amount || amount <= 0) {
+      Alert.alert("Error", "Please enter a valid saving amount.");
+      return;
+    }
+    if (amount > totalBalance) {
+      Alert.alert("Failed", "Insufficient balance in your Main Account.");
+      return;
+    }
+
+    // Deduct from Main Account
+    setTotalBalance(prev => prev - amount);
+
+    // Update Zini's personal score (The top progress bar is tightly bound to this)
+    setMembersData((prev: any) => {
+      const squadMembers = prev[activeSquad] || [];
+      const updatedMembers = squadMembers.map((m: any) => {
+        if (m.id === 'z') {
+          return { ...m, saved: m.saved + amount };
+        }
+        return m;
+      });
+      return { ...prev, [activeSquad]: updatedMembers };
+    });
+
+    // Add Live Broadcast to Activity Feed
+    const freqText = depositFreq === 'One-time' ? '' : ` (Auto: ${depositFreq})`;
+    const newActivity = {
+      id: Date.now(),
+      user: 'Zini',
+      msg: `deposited RM ${amount.toFixed(2)}${freqText} into the pocket! 💰`,
+      cat: squadGoals[activeSquad]?.title || 'Squad Goal',
+      icon: 'cash-plus',
+      color: '#10b981' 
+    };
+
+    setActivities((prev: any) => ({
+      ...prev,
+      [activeSquad]: [newActivity, ...(prev[activeSquad] || [])],
+      All: [newActivity, ...(prev.All || [])]
+    }));
+
+    setShowDepositModal(false);
+    setDepositAmount('');
+    setDepositFreq('One-time');
+    Alert.alert("Saved!", `RM ${amount.toFixed(2)} has been moved to your pocket.`);
   };
 
-  // Dynamic Texts for warning modals
+  const copyToClipboard = (code: string) => {
+    Clipboard.setString(code);
+    Alert.alert("Code Copied!", `${code} is ready.`);
+  };
+
   const getWarningTitle = () => {
     if (aiMode === 'Gentle') return "Are you sure about this? 🤔";
     if (aiMode === 'Strict') return "Impulse Spending Alert! 🚨";
@@ -154,50 +246,90 @@ export default function App() {
     return "20% Penalty + Squad Broadcast! 🔥";
   };
 
-  // ==========================================
-  // REAL-TIME DEDUCTION LOGIC
-  // ==========================================
   const handleProceedTransaction = () => {
     const itemCost = 50.00; 
 
     if (aiMode === 'Gentle') {
       setTotalBalance((prev: number) => prev - itemCost);
-      Alert.alert("✅ Action Taken", `Transaction approved. RM ${itemCost.toFixed(2)} deducted from your account.`, [{ text: "OK", onPress: () => setShowWarning(false) }]);
+      Alert.alert("Action Taken", `Transaction approved. RM ${itemCost.toFixed(2)} deducted from your account.`, [{ text: "OK", onPress: () => setShowWarning(false) }]);
     
     } else if (aiMode === 'Strict') {
       setTotalBalance((prev: number) => prev - (itemCost + 5.00));
       setSamaSaveBalance((prev: number) => prev + 5.00); 
-      Alert.alert("💸 Action Taken", `Transaction approved. RM ${(itemCost + 5).toFixed(2)} deducted (Includes RM 5.00 penalty sent to Vault).`, [{ text: "OK", onPress: () => setShowWarning(false) }]);
+      Alert.alert("Action Taken", `Transaction approved. RM ${(itemCost + 5).toFixed(2)} deducted (Includes RM 5.00 penalty sent to Vault).`, [{ text: "OK", onPress: () => setShowWarning(false) }]);
     
     } else {
       setTotalBalance((prev: number) => prev - (itemCost + 10.00));
       setSamaSaveBalance((prev: number) => prev + 10.00); 
-      Alert.alert("💸 Action Taken", `Transaction approved. RM ${(itemCost + 10).toFixed(2)} deducted. Penalty recorded and broadcasted!`, [{ text: "OK", onPress: () => setShowWarning(false) }]);
+      Alert.alert("Action Taken", `Transaction approved. RM ${(itemCost + 10).toFixed(2)} deducted. Penalty recorded and broadcasted!`, [{ text: "OK", onPress: () => setShowWarning(false) }]);
     }
   };
 
   const renderGoalProgress = () => {
-    const goal = squadGoals[activeSquad] || { title: 'New Squad Goal', current: 0, target: 1000 };
-    const progressPercent = Math.min((goal.current / goal.target) * 100, 100) + '%';
+    const goal = squadGoals[activeSquad] || { title: 'New Squad Goal', target: 1000 };
+    
+    // Hard bind the top progress bar exactly to Zini's data to avoid any desync
+    const ziniData = (membersData[activeSquad] || []).find((m: any) => m.id === 'z') || { saved: 0 };
+    const currentSaved = ziniData.saved;
+    const progressPercent = Math.min((currentSaved / goal.target) * 100, 100) + '%';
     
     return (
       <View style={styles.goalContainer}>
-        {/* Stacked Layout to prevent text squishing */}
         <Text style={styles.goalTitle}>
           {goal.title} 🎯
         </Text>
         
         <TouchableOpacity 
           onPress={() => { setEditGoalAmount(goal.target.toString()); setShowEditGoalModal(true); }} 
-          style={{flexDirection: 'row', alignItems: 'center', marginTop: 8, marginBottom: 4}}
+          style={{flexDirection: 'row', alignItems: 'flex-start', marginTop: 8, marginBottom: 4}}
         >
-          <Text style={styles.goalAmount}>RM {goal.current} / RM {goal.target} per person</Text>
-          <MaterialCommunityIcons name="pencil-outline" size={14} color="#22d3ee" style={{marginLeft: 5}} />
+          <Text style={[styles.goalAmount, { flex: 1, flexWrap: 'wrap', lineHeight: 18 }]}>
+            RM {currentSaved} / RM {goal.target} per person
+          </Text>
+          <MaterialCommunityIcons name="pencil-outline" size={14} color="#22d3ee" style={{marginLeft: 5, marginTop: 2}} />
         </TouchableOpacity>
 
         <View style={styles.progressBarBg}>
           <View style={[styles.progressBarFill, {width: progressPercent}]} />
         </View>
+
+        <TouchableOpacity style={styles.depositBtn} onPress={() => setShowDepositModal(true)}>
+          <MaterialCommunityIcons name="piggy-bank" size={16} color="white" />
+          <Text style={styles.depositBtnText}>Save Money</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  const renderDynamicLeaderboard = () => {
+    const currentMembers = membersData[activeSquad] || [];
+    
+    const sortedMembers = [...currentMembers].sort((a: any, b: any) => {
+      const rateA = (a.saved / a.target) || 0;
+      const rateB = (b.saved / b.target) || 0;
+      return rateB - rateA; 
+    });
+    
+    const medals = ["🥇", "🥈", "🥉"];
+
+    return (
+      <View>
+        {sortedMembers.map((member: any, index: number) => {
+          const isFirstPlace = index === 0;
+          const medal = medals[index] || "🏅"; 
+          const bonusTag = isFirstPlace ? "+0.5% Cash Booster! 🚀" : null;
+          
+          const rate = member.target > 0 ? (member.saved / member.target) : 0;
+          const percentage = Math.round(rate * 100);
+          const scoreDisplay = `Progress: ${percentage}%`;
+
+          return (
+            <View key={member.id}>
+              {renderRankRow(medal, member.name, scoreDisplay, member.status, bonusTag)}
+              {index < sortedMembers.length - 1 && <View style={styles.divider} />}
+            </View>
+          );
+        })}
       </View>
     );
   };
@@ -206,10 +338,10 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#1a0b2e" />
       
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
         
         {/* ========================================== */}
-        {/*                 HOME Page                  */}
+        {/* HOME Page                                  */}
         {/* ========================================== */}
         {activeTab === 'Home' && (
           <View>
@@ -260,7 +392,7 @@ export default function App() {
         )}
 
         {/* ========================================== */}
-        {/*               SamaSave Dashboard           */}
+        {/* SamaSave Dashboard                         */}
         {/* ========================================== */}
         {activeTab === 'SamaSave' && (
           <View style={styles.dashboardContainer}>
@@ -294,12 +426,22 @@ export default function App() {
                 <MaterialCommunityIcons name="view-grid-outline" size={16} color={activeSquad === 'All' ? "white" : "#9ca3af"} style={{ marginRight: 4 }} />
                 <Text style={[styles.squadText, activeSquad === 'All' && styles.squadTextActive]}>All</Text>
               </TouchableOpacity>
+              
               {squads.map((squad) => (
                 <TouchableOpacity key={squad.id} onPress={() => setActiveSquad(squad.id)} style={[styles.squadBadge, activeSquad === squad.id && styles.squadBadgeActive]}>
                   <Text style={[styles.squadText, activeSquad === squad.id && styles.squadTextActive]}>{squad.name}</Text>
                 </TouchableOpacity>
               ))}
-              <TouchableOpacity onPress={() => setShowCreateModal(true)} style={styles.squadBadgeDashed}><Ionicons name="add" size={16} color="#9ca3af" /><Text style={styles.squadText}>New</Text></TouchableOpacity>
+              
+              <TouchableOpacity onPress={() => setShowCreateModal(true)} style={styles.squadBadgeDashed}>
+                <Ionicons name="add" size={16} color="#9ca3af" />
+                <Text style={styles.squadText}>New</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => setShowJoinModal(true)} style={[styles.squadBadgeDashed, { borderColor: '#22d3ee' }]}>
+                <MaterialCommunityIcons name="login" size={16} color="#22d3ee" style={{ marginRight: 4 }} />
+                <Text style={[styles.squadText, { color: '#22d3ee' }]}>Join</Text>
+              </TouchableOpacity>
             </ScrollView>
             
             <View style={styles.leaderboardBox}>
@@ -337,31 +479,16 @@ export default function App() {
 
                   {renderGoalProgress()}
 
-                  {activeSquad === 'Besties' ? (
-                    <>
-                      {renderRankRow("🥇", "Zini", "98", "Safe 🛡️", "+0.5% Interest Unlocked! 🚀")}
-                      <View style={styles.divider} />
-                      {renderRankRow("🥈", "Xinying", "95", "Safe 🛡️")}
-                      <View style={styles.divider} />
-                      {renderRankRow("🥉", "Michelle", "85", "Warning ⚠️")}
-                    </>
-                  ) : activeSquad === 'JapanTrip' ? (
-                    <View style={styles.rankRow}>
-                      <Text style={styles.rankMedal}>🥇</Text>
-                      <View style={styles.rankInfo}>
-                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                          <Text style={styles.rankName}>Zini</Text>
-                          <View style={styles.bonusBadge}><Text style={styles.bonusText}>+0.5% Interest Unlocked! 🚀</Text></View>
-                        </View>
-                        <Text style={styles.rankStatusSafe}>Score: 100 | Ready for Sushi 🍣</Text>
-                      </View>
-                    </View>
-                  ) : (
-                    <View style={{ padding: 20, alignItems: 'center' }}>
-                      <Text style={{ color: '#9ca3af', fontSize: 14 }}>Welcome to your new squad!</Text>
-                      <Text style={{ color: 'white', fontSize: 18, fontWeight: 'bold', marginTop: 10 }}>Rank #1 👑</Text>
-                    </View>
-                  )}
+                  <View style={{ backgroundColor: '#2d1b4e', padding: 12, borderRadius: 10, marginBottom: 15, borderWidth: 1, borderColor: '#7c3aed' }}>
+                    <Text style={{ color: '#22d3ee', fontSize: 12, fontWeight: 'bold', marginBottom: 4 }}>
+                      ⏳ Resets every Sun 00:00
+                    </Text>
+                    <Text style={{ color: '#9ca3af', fontSize: 11, lineHeight: 16 }}>
+                      Rank #1 earns a 0.5% Cash Booster on their saved amount (Capped at RM 5.00 weekly reward 💸)
+                    </Text>
+                  </View>
+
+                  {renderDynamicLeaderboard()}
                 </View>
               )}
             </View>
@@ -372,16 +499,16 @@ export default function App() {
             </View>
             
             <View style={styles.feedBox}>
-              {(activityData[activeSquad] || []).slice(0, 2).map((item: any) => (
+              {(activities[activeSquad] || []).slice(0, 3).map((item: any) => (
                 <View key={item.id} style={styles.feedItem}>
                   <MaterialCommunityIcons name={item.icon} size={20} color={item.color} />
                   <View style={{ marginLeft: 10, flex: 1 }}>
                     <Text style={styles.feedText}><Text style={styles.feedName}>{item.user}</Text> {item.msg}</Text>
-                    <Text style={styles.feedCategoryLabel}>in {item.cat}</Text>
+                    <Text style={styles.feedCategoryLabel}>in {item.cat} • Just now</Text>
                   </View>
                 </View>
               ))}
-              {(!activityData[activeSquad] || activityData[activeSquad].length === 0) && (
+              {(!activities[activeSquad] || activities[activeSquad].length === 0) && (
                  <View style={{ padding: 15, alignItems: 'center' }}>
                     <MaterialCommunityIcons name="sleep" size={30} color="#6b7280" />
                     <Text style={{ color: '#9ca3af', fontSize: 13, marginTop: 8 }}>Quiet here... No activity yet.</Text>
@@ -422,7 +549,7 @@ export default function App() {
             <TouchableOpacity style={styles.payPenaltyButton} onPress={handleProceedTransaction}>
               <Text style={styles.payPenaltyText}>{getProceedButtonText()}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.cancelTransactionButton} onPress={() => { Alert.alert("🛡️ Victory", "Impulse stopped! No money deducted.", [{ text: "Done", onPress: () => setShowWarning(false) }]); }}>
+            <TouchableOpacity style={styles.cancelTransactionButton} onPress={() => { Alert.alert("Victory", "Impulse stopped! No money deducted.", [{ text: "Done", onPress: () => setShowWarning(false) }]); }}>
               <Text style={styles.cancelTransactionText}>{getCancelButtonText()}</Text>
             </TouchableOpacity>
           </View>
@@ -432,42 +559,114 @@ export default function App() {
       {/* Squad Creation Modal */}
       <Modal visible={showCreateModal} animationType="slide" transparent={true}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.modalOverlay}>
-              <View style={styles.createBox}>
-                <Text style={styles.createTitle}>Create New Category 🚀</Text>
-                
-                <TextInput style={styles.inputField} placeholder="e.g. Graduation Trip" placeholderTextColor="#6b7280" value={squadName} onChangeText={setSquadName} underlineColorAndroid="transparent" />
-                <TextInput style={styles.inputField} placeholder="Target Goal Amount (RM)" placeholderTextColor="#6b7280" value={squadGoalAmount} onChangeText={setSquadGoalAmount} keyboardType="numeric" underlineColorAndroid="transparent" />
+          <View style={styles.modalOverlay}>
+            <View style={styles.createBox}>
+              <Text style={styles.createTitle}>Create New Category 🚀</Text>
+              
+              <TextInput style={styles.inputField} placeholder="e.g. Graduation Trip" placeholderTextColor="#6b7280" value={squadName} onChangeText={setSquadName} underlineColorAndroid="transparent" />
+              <TextInput style={styles.inputField} placeholder="Target Goal Amount (RM)" placeholderTextColor="#6b7280" value={squadGoalAmount} onChangeText={setSquadGoalAmount} keyboardType="numeric" underlineColorAndroid="transparent" />
 
-                <View style={styles.inviteSection}>
-                  <Text style={styles.inviteTitle}>Initial Members:</Text>
-                  {renderInviteRow("Michelle", inviteMichelle, setInviteMichelle)}
-                  {renderInviteRow("Xinying", inviteXinying, setInviteXinying)}
-                </View>
-                
-                <TouchableOpacity style={styles.createSubmitButton} onPress={handleCreateSquad}><Text style={styles.createSubmitText}>Start Squad</Text></TouchableOpacity>
-                <TouchableOpacity onPress={() => setShowCreateModal(false)}><Text style={styles.cancelLinkText}>Cancel</Text></TouchableOpacity>
+              <View style={styles.inviteSection}>
+                <Text style={styles.inviteTitle}>Initial Members:</Text>
+                {renderInviteRow("Michelle", inviteMichelle, setInviteMichelle)}
+                {renderInviteRow("Xinying", inviteXinying, setInviteXinying)}
               </View>
+              
+              <TouchableOpacity style={styles.createSubmitButton} onPress={handleCreateSquad}><Text style={styles.createSubmitText}>Start Squad</Text></TouchableOpacity>
+              <TouchableOpacity onPress={() => setShowCreateModal(false)}><Text style={styles.cancelLinkText}>Cancel</Text></TouchableOpacity>
             </View>
-          </TouchableWithoutFeedback>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
+
+      {/* Join Squad via Code Modal */}
+      <Modal visible={showJoinModal} animationType="slide" transparent={true}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+          <View style={styles.modalOverlay}>
+            <View style={styles.createBox}>
+              <Text style={styles.createTitle}>Join a Squad 🤝</Text>
+              <Text style={styles.inviteTitle}>Enter the secret code from your friend to join their saving squad!</Text>
+              
+              <TextInput 
+                style={[styles.inputField, { marginTop: 15, textTransform: 'uppercase', textAlign: 'center', fontSize: 20, letterSpacing: 2 }]} 
+                placeholder="e.g. SAMA-BFF-2026" 
+                placeholderTextColor="#6b7280" 
+                value={joinCodeInput} 
+                onChangeText={setJoinCodeInput} 
+                autoCapitalize="characters"
+              />
+
+              <TouchableOpacity style={[styles.createSubmitButton, { backgroundColor: '#22d3ee' }]} onPress={handleJoinSquad}>
+                <Text style={[styles.createSubmitText, { color: '#11081f' }]}>Join Squad</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setShowJoinModal(false)}><Text style={styles.cancelLinkText}>Cancel</Text></TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
+
+      {/* Deposit Modal */}
+      <Modal visible={showDepositModal} animationType="slide" transparent={true}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+          <View style={styles.modalOverlay}>
+            <View style={styles.createBox}>
+              <Text style={styles.createTitle}>Deposit to Pocket 💰</Text>
+              <Text style={styles.inviteTitle}>How much would you like to save into {squadGoals[activeSquad]?.title}?</Text>
+              
+              <TextInput 
+                style={[styles.inputField, { fontSize: 24, textAlign: 'center', fontWeight: 'bold', color: '#22d3ee' }]} 
+                placeholder="RM 0.00" 
+                placeholderTextColor="#6b7280" 
+                value={depositAmount} 
+                onChangeText={setDepositAmount} 
+                keyboardType="numeric" 
+              />
+
+              <Text style={styles.inviteTitle}>Auto-deduct Frequency:</Text>
+              <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 25}}>
+                {['One-time', 'Daily', 'Weekly', 'Monthly'].map((freq) => (
+                  <TouchableOpacity 
+                    key={freq} 
+                    onPress={() => setDepositFreq(freq)}
+                    style={{
+                      flex: 1, 
+                      paddingVertical: 8, 
+                      marginHorizontal: 4, 
+                      borderRadius: 8, 
+                      borderWidth: 1, 
+                      alignItems: 'center',
+                      borderColor: depositFreq === freq ? '#22d3ee' : '#2d1b4e',
+                      backgroundColor: depositFreq === freq ? 'rgba(34, 211, 238, 0.1)' : '#11081f'
+                    }}
+                  >
+                    <Text style={{color: depositFreq === freq ? '#22d3ee' : '#6b7280', fontSize: 11, fontWeight: 'bold'}}>
+                      {freq}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <TouchableOpacity style={[styles.createSubmitButton, { backgroundColor: '#10b981' }]} onPress={handleDeposit}>
+                <Text style={styles.createSubmitText}>Confirm Deposit</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setShowDepositModal(false)}><Text style={styles.cancelLinkText}>Cancel</Text></TouchableOpacity>
+            </View>
+          </View>
         </KeyboardAvoidingView>
       </Modal>
 
       {/* Edit Target Goal Modal */}
       <Modal visible={showEditGoalModal} animationType="fade" transparent={true}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.modalOverlay}>
-              <View style={styles.createBox}>
-                <Text style={styles.createTitle}>Update Goal 🎯</Text>
-                <Text style={styles.inviteTitle}>New target amount for {squadGoals[activeSquad]?.title}:</Text>
-                <TextInput style={styles.inputField} placeholder="Enter new target (RM)" placeholderTextColor="#6b7280" value={editGoalAmount} onChangeText={setEditGoalAmount} keyboardType="numeric" />
-                <TouchableOpacity style={styles.createSubmitButton} onPress={handleEditGoal}><Text style={styles.createSubmitText}>Save Changes</Text></TouchableOpacity>
-                <TouchableOpacity onPress={() => setShowEditGoalModal(false)}><Text style={styles.cancelLinkText}>Cancel</Text></TouchableOpacity>
-              </View>
+          <View style={styles.modalOverlay}>
+            <View style={styles.createBox}>
+              <Text style={styles.createTitle}>Update Goal 🎯</Text>
+              <Text style={styles.inviteTitle}>New target amount for {squadGoals[activeSquad]?.title}:</Text>
+              <TextInput style={styles.inputField} placeholder="Enter new target (RM)" placeholderTextColor="#6b7280" value={editGoalAmount} onChangeText={setEditGoalAmount} keyboardType="numeric" />
+              <TouchableOpacity style={styles.createSubmitButton} onPress={handleEditGoal}><Text style={styles.createSubmitText}>Save Changes</Text></TouchableOpacity>
+              <TouchableOpacity onPress={() => setShowEditGoalModal(false)}><Text style={styles.cancelLinkText}>Cancel</Text></TouchableOpacity>
             </View>
-          </TouchableWithoutFeedback>
+          </View>
         </KeyboardAvoidingView>
       </Modal>
 
@@ -497,7 +696,7 @@ export default function App() {
               <TouchableOpacity onPress={() => setShowMembersModal(false)}><Ionicons name="close-circle" size={28} color="#9ca3af" /></TouchableOpacity>
             </View>
             <ScrollView>
-              {(membersData[activeSquad] || [{ id: 'z', name: 'Zini (You)', initial: 'Z', color: '#7c3aed' }]).map((m: any) => (
+              {(membersData[activeSquad] || [{ id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed' }]).map((m: any) => (
                 <View key={m.id} style={styles.memberItem}>
                   <View style={[styles.avatarLarge, { backgroundColor: m.color }]}>
                     <Text style={styles.avatarTextLarge}>{m.initial}</Text>
@@ -523,16 +722,16 @@ export default function App() {
               <TouchableOpacity onPress={() => setShowHistoryModal(false)}><Ionicons name="close-circle" size={28} color="#9ca3af" /></TouchableOpacity>
             </View>
             <ScrollView>
-              {(activityData[activeSquad] || activityData.All).map((item: any) => (
+              {(activities[activeSquad] || activities.All).map((item: any) => (
                 <View key={item.id} style={styles.historyItem}>
                   <MaterialCommunityIcons name={item.icon} size={24} color={item.color} />
                   <View style={{ marginLeft: 15, flex: 1 }}>
                     <Text style={styles.feedText}><Text style={styles.feedName}>{item.user}</Text> {item.msg}</Text>
-                    <Text style={styles.feedCategoryLabel}>in {item.cat} • 2h ago</Text>
+                    <Text style={styles.feedCategoryLabel}>in {item.cat} • Just now</Text>
                   </View>
                 </View>
               ))}
-              {(!activityData[activeSquad] || activityData[activeSquad].length === 0) && (
+              {(!activities[activeSquad] || activities[activeSquad].length === 0) && (
                  <View style={{ padding: 15, alignItems: 'center' }}>
                     <MaterialCommunityIcons name="sleep" size={30} color="#6b7280" />
                     <Text style={{ color: '#9ca3af', fontSize: 13, marginTop: 8 }}>Quiet here... No activity yet.</Text>
@@ -572,7 +771,7 @@ const renderRankRow = (medal: any, name: any, score: any, status: any, bonusText
           </View>
         )}
       </View>
-      <Text style={styles.rankStatusSafe}>Score: {score} | {status}</Text>
+      <Text style={styles.rankStatusSafe}>{score} | {status}</Text>
     </View>
   </View>
 );
@@ -656,10 +855,12 @@ const styles = StyleSheet.create({
   leaderboardBox: { backgroundColor: '#1f1b2e', borderRadius: 20, padding: 20, borderWidth: 1, borderColor: '#2d1b4e' },
   
   goalContainer: { backgroundColor: '#11081f', borderRadius: 15, padding: 15, marginBottom: 20, borderWidth: 1, borderColor: '#2d1b4e' },
-  goalTitle: { color: 'white', fontSize: 14, fontWeight: 'bold' },
-  goalAmount: { color: '#22d3ee', fontSize: 12, fontWeight: 'bold' },
-  progressBarBg: { height: 8, backgroundColor: '#2d1b4e', borderRadius: 4, marginTop: 12 },
+  goalTitle: { color: 'white', fontSize: 16, fontWeight: 'bold' },
+  goalAmount: { color: '#22d3ee', fontSize: 13, fontWeight: 'bold' },
+  progressBarBg: { height: 8, backgroundColor: '#2d1b4e', borderRadius: 4, marginTop: 14, marginBottom: 15 },
   progressBarFill: { height: 8, backgroundColor: '#22d3ee', borderRadius: 4 },
+  depositBtn: { backgroundColor: '#7c3aed', paddingVertical: 8, paddingHorizontal: 15, borderRadius: 20, flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start' },
+  depositBtnText: { color: 'white', fontSize: 12, fontWeight: 'bold', marginLeft: 6 },
   
   squadInfoRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
   squadBoardTitle: { color: '#9ca3af', fontSize: 14, fontWeight: 'bold' },
