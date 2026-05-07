@@ -43,19 +43,20 @@ export default function App() {
   const [depositFreq, setDepositFreq] = useState('One-time'); 
 
   // ==========================================
-  // DYNAMIC MEMBERS & LEADERBOARD 
+  // DYNAMIC MEMBERS & LEADERBOARD (SCENARIO B)
+  // 'saved' is for overall progress, 'weekly' is for leaderboard ranking
   // ==========================================
   const [membersData, setMembersData] = useState<any>({
     Besties: [
-      { id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: 1960, target: 2000, status: 'Safe 🛡️' },
-      { id: 'x', name: 'Xinying', initial: 'X', color: '#f43f5e', saved: 1600, target: 2000, status: 'Safe 🛡️' },
-      { id: 'm', name: 'Michelle', initial: 'M', color: '#22d3ee', saved: 1200, target: 2000, status: 'Warning ⚠️' }
+      { id: 'z', name: 'Zini(You)', initial: 'Z', color: '#7c3aed', saved: 1260, weekly: 40, target: 2000, status: 'Safe 🛡️' },
+      { id: 'x', name: 'Xinying', initial: 'X', color: '#f43f5e', saved: 1400, weekly: 120, target: 2000, status: 'Safe 🛡️' },
+      { id: 'm', name: 'Michelle', initial: 'M', color: '#22d3ee', saved: 900, weekly: 15, target: 2000, status: 'Warning ⚠️' }
     ],
     Family: [
-      { id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: 800, target: 3000, status: 'On Track 🎯' }
+      { id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: 800, weekly: 100, target: 3000, status: 'On Track 🎯' }
     ],
     JapanTrip: [
-      { id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: 4500, target: 8000, status: 'Ready for Sushi 🍣' }
+      { id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: 4500, weekly: 500, target: 8000, status: 'Ready for Sushi 🍣' }
     ]
   });
 
@@ -98,9 +99,9 @@ export default function App() {
     const newSquadName = `${squadName} ✨`;
     const targetAmount = parseFloat(squadGoalAmount) || 1000; 
     
-    const newMembers = [{ id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: targetAmount, target: targetAmount, status: 'Leader 👑' }]; 
-    if (inviteMichelle) newMembers.push({ id: 'm', name: 'Michelle', initial: 'M', color: '#22d3ee', saved: targetAmount * 0.8, target: targetAmount, status: 'Just joined 🐣' });
-    if (inviteXinying) newMembers.push({ id: 'x', name: 'Xinying', initial: 'X', color: '#f43f5e', saved: targetAmount * 0.9, target: targetAmount, status: 'Catching up 🏃' });
+    const newMembers = [{ id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: targetAmount, weekly: 0, target: targetAmount, status: 'Leader 👑' }]; 
+    if (inviteMichelle) newMembers.push({ id: 'm', name: 'Michelle', initial: 'M', color: '#22d3ee', saved: targetAmount * 0.8, weekly: 0, target: targetAmount, status: 'Just joined 🐣' });
+    if (inviteXinying) newMembers.push({ id: 'x', name: 'Xinying', initial: 'X', color: '#f43f5e', saved: targetAmount * 0.9, weekly: 0, target: targetAmount, status: 'Catching up 🏃' });
 
     setMembersData((prev: any) => ({ ...prev, [newSquadId]: newMembers }));
     setSquadGoals((prev: any) => ({ ...prev, [newSquadId]: { title: squadName, target: targetAmount } }));
@@ -135,10 +136,11 @@ export default function App() {
     const newSquadName = `🚀 ${dynamicName} Trip`; 
     const targetAmount = 15000; 
 
+    // MOCK DATA for Demo: Xinying is #1 for the week, Zini is #2. Zini will overtake later.
     const newMembers = [
-      { id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: 14700, target: targetAmount, status: 'Safe 🛡️' }, 
-      { id: 'a', name: 'Ahmad', initial: 'A', color: '#f59e0b', saved: 13500, target: targetAmount, status: 'Safe 🛡️' }, 
-      { id: 's', name: 'Sarah', initial: 'S', color: '#10b981', saved: 9000, target: targetAmount, status: 'Catching up 🏃' } 
+      { id: 'x', name: 'Xinying', initial: 'X', color: '#f43f5e', saved: 12000, weekly: 800, target: targetAmount, status: 'Safe 🛡️' }, 
+      { id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: 14000, weekly: 200, target: targetAmount, status: 'Catching up 🏃' }, 
+      { id: 'm', name: 'Michelle', initial: 'M', color: '#22d3ee', saved: 9000, weekly: 50, target: targetAmount, status: 'Warning ⚠️' } 
     ];
 
     setMembersData((prev: any) => ({ ...prev, [newSquadId]: newMembers }));
@@ -173,22 +175,20 @@ export default function App() {
       return;
     }
 
-    // Deduct from Main Account
     setTotalBalance(prev => prev - amount);
 
-    // Update Zini's personal score (The top progress bar is tightly bound to this)
     setMembersData((prev: any) => {
       const squadMembers = prev[activeSquad] || [];
       const updatedMembers = squadMembers.map((m: any) => {
         if (m.id === 'z') {
-          return { ...m, saved: m.saved + amount };
+          // IMPORTANT: Update both overall saved and weekly ranking score
+          return { ...m, saved: m.saved + amount, weekly: (m.weekly || 0) + amount };
         }
         return m;
       });
       return { ...prev, [activeSquad]: updatedMembers };
     });
 
-    // Add Live Broadcast to Activity Feed
     const freqText = depositFreq === 'One-time' ? '' : ` (Auto: ${depositFreq})`;
     const newActivity = {
       id: Date.now(),
@@ -268,7 +268,6 @@ export default function App() {
   const renderGoalProgress = () => {
     const goal = squadGoals[activeSquad] || { title: 'New Squad Goal', target: 1000 };
     
-    // Hard bind the top progress bar exactly to Zini's data to avoid any desync
     const ziniData = (membersData[activeSquad] || []).find((m: any) => m.id === 'z') || { saved: 0 };
     const currentSaved = ziniData.saved;
     const progressPercent = Math.min((currentSaved / goal.target) * 100, 100) + '%';
@@ -284,7 +283,7 @@ export default function App() {
           style={{flexDirection: 'row', alignItems: 'flex-start', marginTop: 8, marginBottom: 4}}
         >
           <Text style={[styles.goalAmount, { flex: 1, flexWrap: 'wrap', lineHeight: 18 }]}>
-            RM {currentSaved} / RM {goal.target} per person
+            Overall: RM {currentSaved} / RM {goal.target} per person
           </Text>
           <MaterialCommunityIcons name="pencil-outline" size={14} color="#22d3ee" style={{marginLeft: 5, marginTop: 2}} />
         </TouchableOpacity>
@@ -304,10 +303,11 @@ export default function App() {
   const renderDynamicLeaderboard = () => {
     const currentMembers = membersData[activeSquad] || [];
     
+    // Sort members by their WEEKLY savings
     const sortedMembers = [...currentMembers].sort((a: any, b: any) => {
-      const rateA = (a.saved / a.target) || 0;
-      const rateB = (b.saved / b.target) || 0;
-      return rateB - rateA; 
+      const weeklyA = a.weekly || 0;
+      const weeklyB = b.weekly || 0;
+      return weeklyB - weeklyA; 
     });
     
     const medals = ["🥇", "🥈", "🥉"];
@@ -317,11 +317,9 @@ export default function App() {
         {sortedMembers.map((member: any, index: number) => {
           const isFirstPlace = index === 0;
           const medal = medals[index] || "🏅"; 
-          const bonusTag = isFirstPlace ? "+0.5% Cash Booster! 🚀" : null;
           
-          const rate = member.target > 0 ? (member.saved / member.target) : 0;
-          const percentage = Math.round(rate * 100);
-          const scoreDisplay = `Progress: ${percentage}%`;
+          const bonusTag = isFirstPlace ? "+0.5% Weekly Interest 💸" : null;
+          const scoreDisplay = `Weekly Saved: RM ${member.weekly || 0}`;
 
           return (
             <View key={member.id}>
@@ -479,12 +477,13 @@ export default function App() {
 
                   {renderGoalProgress()}
 
+                  {/* WEEKLY REWARD INFO BOX */}
                   <View style={{ backgroundColor: '#2d1b4e', padding: 12, borderRadius: 10, marginBottom: 15, borderWidth: 1, borderColor: '#7c3aed' }}>
                     <Text style={{ color: '#22d3ee', fontSize: 12, fontWeight: 'bold', marginBottom: 4 }}>
-                      ⏳ Resets every Sun 00:00
+                      ⏳ Weekly Reward Snapshot (Sun 00:00)
                     </Text>
                     <Text style={{ color: '#9ca3af', fontSize: 11, lineHeight: 16 }}>
-                      Rank #1 earns a 0.5% Cash Booster on their saved amount (Capped at RM 5.00 weekly reward 💸)
+                      Rank #1 earns 0.5% interest on their NEW weekly deposits (Capped at RM 5.00/week 💸)
                     </Text>
                   </View>
 
