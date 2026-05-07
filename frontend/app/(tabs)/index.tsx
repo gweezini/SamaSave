@@ -303,7 +303,6 @@ export default function App() {
   const renderDynamicLeaderboard = () => {
     const currentMembers = membersData[activeSquad] || [];
     
-    // Sort members by their WEEKLY savings
     const sortedMembers = [...currentMembers].sort((a: any, b: any) => {
       const weeklyA = a.weekly || 0;
       const weeklyB = b.weekly || 0;
@@ -318,7 +317,8 @@ export default function App() {
           const isFirstPlace = index === 0;
           const medal = medals[index] || "🏅"; 
           
-          const bonusTag = isFirstPlace ? "+0.5% Weekly Interest 💸" : null;
+          const bonusTag = isFirstPlace ? "Weekly Reward 0.5% Interest 💸" : null;
+          
           const scoreDisplay = `Weekly Saved: RM ${member.weekly || 0}`;
 
           return (
