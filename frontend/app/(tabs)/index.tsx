@@ -480,10 +480,10 @@ export default function App() {
                   {/* WEEKLY REWARD INFO BOX */}
                   <View style={{ backgroundColor: '#2d1b4e', padding: 12, borderRadius: 10, marginBottom: 15, borderWidth: 1, borderColor: '#7c3aed' }}>
                     <Text style={{ color: '#22d3ee', fontSize: 12, fontWeight: 'bold', marginBottom: 4 }}>
-                      ⏳ Weekly Reward Snapshot (Sun 00:00)
+                      ⏳ Weekly Reward Snapshot (Mon 00:00)
                     </Text>
                     <Text style={{ color: '#9ca3af', fontSize: 11, lineHeight: 16 }}>
-                      Rank #1 earns 0.5% interest on their NEW weekly deposits (Capped at RM 5.00/week 💸)
+                      Rank #1 earns 0.5% interest on their NEW weekly deposits (Maximum of RM 5.00/week 💸)
                     </Text>
                   </View>
 
