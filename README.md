@@ -167,5 +167,5 @@ Potential future expansion includes:
 - Personalized saving recommendations  
 - Full GXBank ecosystem integration  
 
-❤️ Vision  
+## ❤️ Vision  
 SamaSave is more than a saving app. It is a behavioural finance system designed to make financial resilience automatic, social, and rewarding for the next generation. Our ultimate goal? To prevent debt before it even happens.  
