@@ -216,7 +216,16 @@ export function SamaSaveModals({ state, actions }: any) {
                 {renderInviteRow("Xinying", inviteXinying, setInviteXinying)}
               </View>
               
-              <TouchableOpacity style={styles.createSubmitButton} onPress={handleCreateSquad}><Text style={styles.createSubmitText}>Start Pocket</Text></TouchableOpacity>
+              {(!inviteMichelle && !inviteXinying) && (
+                <View style={{ backgroundColor: 'rgba(244, 63, 94, 0.15)', padding: 10, borderRadius: 10, marginBottom: 15, borderWidth: 1, borderColor: 'rgba(244, 63, 94, 0.3)' }}>
+                  <Text style={{color: '#f43f5e', fontSize: 12, textAlign: 'center'}}>
+                    ⚠️ Solo Pocket: If no friends join via your invite code within 24 hours, this pocket will be auto-closed and refunded to your Main Account.
+                  </Text>
+                </View>
+              )}
+              <TouchableOpacity style={styles.createSubmitButton} onPress={handleCreateSquad}>
+                <Text style={styles.createSubmitText}>Start Pocket</Text>
+              </TouchableOpacity>
               <TouchableOpacity onPress={() => setShowCreateModal(false)}><Text style={styles.cancelLinkText}>Cancel</Text></TouchableOpacity>
             </View>
           </View>

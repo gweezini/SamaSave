@@ -26,6 +26,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('Home');
   const [activeSquad, setActiveSquad] = useState('All');
   const [filterTag, setFilterTag] = useState('All');
+  const [showCompletedPockets, setShowCompletedPockets] = useState(false);
   
   // ==========================================
   // CORE FINANCIAL STATES
@@ -70,7 +71,8 @@ export default function App() {
       { id: 'm', name: 'Michelle', initial: 'M', color: '#22d3ee', saved: 900, weekly: 15, target: 2000, status: 'Warning ⚠️' }
     ],
     NewTVFund: [
-      { id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: 800, weekly: 100, target: 3000, status: 'On Track 🎯' }
+      { id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: 800, weekly: 100, target: 3000, status: 'On Track 🎯' },
+      { id: 'x', name: 'Xinying', initial: 'X', color: '#f43f5e', saved: 750, weekly: 50, target: 3000, status: 'Trailing 🏃' }
     ],
     OsakaTrip: [
       { id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: 4500, weekly: 500, target: 8000, status: 'Ready for Sushi 🍣' }
@@ -416,6 +418,8 @@ export default function App() {
   // Renders the progress bar for the currently active squad's savings goal.
   const renderGoalProgress = () => {
     const goal = squadGoals[activeSquad] || { title: 'New Squad Goal', target: 1000 };
+    const currentSquad = squads.find((s: any) => s.id === activeSquad) || {};
+    const isCompleted = currentSquad.isCompleted;
     
     const ziniData = (membersData[activeSquad] || []).find((m: any) => m.id === 'z') || { saved: 0 };
     const currentSaved = ziniData.saved;
@@ -428,23 +432,31 @@ export default function App() {
         </Text>
         
         <TouchableOpacity 
-          onPress={() => { setEditGoalAmount(goal.target.toString()); setShowEditGoalModal(true); }} 
+          onPress={() => { if (!isCompleted) { setEditGoalAmount(goal.target.toString()); setShowEditGoalModal(true); } }} 
           style={{flexDirection: 'row', alignItems: 'flex-start', marginTop: 8, marginBottom: 4}}
+          disabled={isCompleted}
         >
           <Text style={[styles.goalAmount, { flex: 1, flexWrap: 'wrap', lineHeight: 18 }]}>
             Overall: RM {currentSaved} / RM {goal.target} per person
           </Text>
-          <MaterialCommunityIcons name="pencil-outline" size={14} color="#22d3ee" style={{marginLeft: 5, marginTop: 2}} />
+          {!isCompleted && <MaterialCommunityIcons name="pencil-outline" size={14} color="#22d3ee" style={{marginLeft: 5, marginTop: 2}} />}
         </TouchableOpacity>
 
         <View style={styles.progressBarBg}>
           <View style={[styles.progressBarFill, {width: progressPercent as any}]} />
         </View>
 
-        <TouchableOpacity style={styles.depositBtn} onPress={() => setShowDepositModal(true)}>
-          <MaterialCommunityIcons name="piggy-bank" size={16} color="white" />
-          <Text style={styles.depositBtnText}>Save Money</Text>
-        </TouchableOpacity>
+        {!isCompleted ? (
+          <TouchableOpacity style={styles.depositBtn} onPress={() => setShowDepositModal(true)}>
+            <MaterialCommunityIcons name="piggy-bank" size={16} color="white" />
+            <Text style={styles.depositBtnText}>Save Money</Text>
+          </TouchableOpacity>
+        ) : (
+          <View style={[styles.depositBtn, {backgroundColor: '#374151', opacity: 0.5}]}>
+            <MaterialCommunityIcons name="lock" size={16} color="#9ca3af" />
+            <Text style={[styles.depositBtnText, {color: '#9ca3af'}]}>Pocket Closed</Text>
+          </View>
+        )}
       </View>
     );
   };
@@ -633,7 +645,11 @@ export default function App() {
               {activeSquad === 'All' ? (
                 <View>
                   <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15}}>
-                    <Text style={[styles.gridHeader, {marginBottom: 0}]}>Your Pockets 📁</Text>
+                    <Text style={[styles.gridHeader, {marginBottom: 0, flex: 1}]}>{showCompletedPockets ? 'History 🔒' : 'Your Pockets 📁'}</Text>
+                    <TouchableOpacity onPress={() => setShowCompletedPockets(!showCompletedPockets)} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#2d1b4e', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 15 }}>
+                      <MaterialCommunityIcons name={showCompletedPockets ? 'folder-open' : 'history'} size={16} color="#22d3ee" />
+                      <Text style={{ color: '#22d3ee', fontSize: 12, marginLeft: 5, fontWeight: 'bold' }}>{showCompletedPockets ? 'Active' : 'History'}</Text>
+                    </TouchableOpacity>
                   </View>
                   
                   <View style={{ flexDirection: 'row', marginBottom: 15 }}>
@@ -656,23 +672,36 @@ export default function App() {
                     </ScrollView>
                   </View>
 
-                  {squads.filter((s: any) => filterTag === 'All' || s.tag === filterTag).map((squad) => {
-                    const goal = squadGoals[squad.id] || { target: 1000 };
-                    const ziniData = (membersData[squad.id] || []).find((m: any) => m.id === 'z') || { saved: 0 };
-                    const progressPercent = Math.min((ziniData.saved / goal.target) * 100, 100) + '%';
-                    return (
-                      <TouchableOpacity key={squad.id} style={[styles.categoryCard, { width: '100%', height: 'auto', flexDirection: 'row', alignItems: 'center', opacity: squad.isCompleted ? 0.6 : 1 }]} onPress={() => setActiveSquad(squad.id)}>
-                        <View style={{flex: 1}}>
-                          <Text style={[styles.categoryCardTitle, { fontSize: 16 }]}>{squad.name} {squad.isCompleted ? '(Done)' : ''}</Text>
-                          <Text style={{color: '#9ca3af', fontSize: 12, marginTop: 4}}>My Progress: RM {ziniData.saved} / RM {goal.target}</Text>
-                          <View style={[styles.progressBarBg, { height: 4, marginTop: 8, marginBottom: 0, width: '80%' }]}>
-                            <View style={[styles.progressBarFill, {width: progressPercent as any}]} />
-                          </View>
+                  {(() => {
+                    const filteredSquads = squads.filter((s: any) => (filterTag === 'All' || s.tag === filterTag) && (showCompletedPockets ? s.isCompleted : !s.isCompleted));
+                    
+                    if (filteredSquads.length === 0) {
+                      return (
+                        <View style={{ padding: 20, alignItems: 'center', backgroundColor: '#1f1b2e', borderRadius: 10, marginBottom: 15, borderWidth: 1, borderColor: '#2d1b4e' }}>
+                          <MaterialCommunityIcons name={showCompletedPockets ? "archive-check-outline" : "folder-outline"} size={40} color="#4b5563" />
+                          <Text style={{ color: '#9ca3af', marginTop: 10, fontSize: 13, fontWeight: 'bold' }}>{showCompletedPockets ? 'No completed pockets yet.' : 'No active pockets here.'}</Text>
                         </View>
-                        <MaterialCommunityIcons name="chevron-right" size={24} color="#7c3aed" />
-                      </TouchableOpacity>
-                    );
-                  })}
+                      );
+                    }
+
+                    return filteredSquads.map((squad) => {
+                      const goal = squadGoals[squad.id] || { target: 1000 };
+                      const ziniData = (membersData[squad.id] || []).find((m: any) => m.id === 'z') || { saved: 0 };
+                      const progressPercent = Math.min((ziniData.saved / goal.target) * 100, 100) + '%';
+                      return (
+                        <TouchableOpacity key={squad.id} style={[styles.categoryCard, { width: '100%', height: 'auto', flexDirection: 'row', alignItems: 'center', opacity: squad.isCompleted ? 0.6 : 1 }]} onPress={() => setActiveSquad(squad.id)}>
+                          <View style={{flex: 1}}>
+                            <Text style={[styles.categoryCardTitle, { fontSize: 16 }]}>{squad.name} {squad.isCompleted ? '(Done)' : ''}</Text>
+                            <Text style={{color: '#9ca3af', fontSize: 12, marginTop: 4}}>My Progress: RM {ziniData.saved} / RM {goal.target}</Text>
+                            <View style={[styles.progressBarBg, { height: 4, marginTop: 8, marginBottom: 0, width: '80%' }]}>
+                              <View style={[styles.progressBarFill, {width: progressPercent as any}]} />
+                            </View>
+                          </View>
+                          <MaterialCommunityIcons name="chevron-right" size={24} color="#7c3aed" />
+                        </TouchableOpacity>
+                      );
+                    });
+                  })()}
                   <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}}>
                     <TouchableOpacity style={[styles.createMainButton, {flex: 1, marginRight: 5, marginTop: 0}]} onPress={() => setShowCreateModal(true)}>
                       <Ionicons name="add-circle" size={20} color="white" style={{marginRight: 6}}/>
