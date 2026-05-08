@@ -113,9 +113,9 @@ export default function App() {
     
     const finalTag = squadTag === 'Other' && customTag.trim() ? customTag.trim() : squadTag;
 
-    const newMembers = [{ id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: targetAmount, weekly: 0, target: targetAmount, status: 'Leader 👑' }]; 
-    if (inviteMichelle) newMembers.push({ id: 'm', name: 'Michelle', initial: 'M', color: '#22d3ee', saved: targetAmount * 0.8, weekly: 0, target: targetAmount, status: 'Just joined 🐣' });
-    if (inviteXinying) newMembers.push({ id: 'x', name: 'Xinying', initial: 'X', color: '#f43f5e', saved: targetAmount * 0.9, weekly: 0, target: targetAmount, status: 'Catching up 🏃' });
+    const newMembers = [{ id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: 0, weekly: 0, target: targetAmount, status: 'Leader 👑' }]; 
+    if (inviteMichelle) newMembers.push({ id: 'm', name: 'Michelle', initial: 'M', color: '#22d3ee', saved: 0, weekly: 0, target: targetAmount, status: 'Just joined 🐣' });
+    if (inviteXinying) newMembers.push({ id: 'x', name: 'Xinying', initial: 'X', color: '#f43f5e', saved: 0, weekly: 0, target: targetAmount, status: 'Catching up 🏃' });
 
     setMembersData((prev: any) => ({ ...prev, [newSquadId]: newMembers }));
     setSquadGoals((prev: any) => ({ ...prev, [newSquadId]: { title: squadName, target: targetAmount, startDate: squadUsableStartDate, endDate: squadUsableEndDate } }));
@@ -157,7 +157,7 @@ export default function App() {
 
     const newMembers = [
       { id: 'x', name: 'Xinying', initial: 'X', color: '#f43f5e', saved: 12000, weekly: 800, target: targetAmount, status: 'Safe 🛡️' }, 
-      { id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: 14000, weekly: 200, target: targetAmount, status: 'Catching up 🏃' }, 
+      { id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: 0, weekly: 0, target: targetAmount, status: 'Just joined 🐣' }, 
       { id: 'm', name: 'Michelle', initial: 'M', color: '#22d3ee', saved: 9000, weekly: 50, target: targetAmount, status: 'Warning ⚠️' } 
     ];
 
