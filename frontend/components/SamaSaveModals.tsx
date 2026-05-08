@@ -1,17 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Modal, Alert, TextInput, KeyboardAvoidingView, Platform, Clipboard } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export function SamaSaveModals({ state, actions }: any) {
+  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const {
-    showWarning, showCreateModal, showInviteModal, showJoinModal, showDepositModal, showHistoryModal, showMembersModal, showEditGoalModal, showBindPartnerModal,
-    aiMode, squadName, squadGoalAmount, inviteMichelle, inviteXinying, joinCodeInput, depositAmount, depositFreq, editGoalAmount, activeSquad, squadGoals, membersData, activities
+    showWarning, showCreateModal, showInviteModal, showJoinModal, showDepositModal, showHistoryModal, showMembersModal, showEditGoalModal, showBindPartnerModal, showCompletionModal, showGXBankModal,
+    aiMode, squadName, squadGoalAmount, squadUsableStartDate, squadUsableEndDate, inviteMichelle, inviteXinying, joinCodeInput, depositAmount, depositFreq, editGoalAmount, gxPaymentAmount, linkedGXPocket, activeSquad, squads, squadGoals, membersData, activities, completedAmount
   } = state;
 
   const {
-    setShowWarning, setShowCreateModal, setShowInviteModal, setShowJoinModal, setShowDepositModal, setShowHistoryModal, setShowMembersModal, setShowEditGoalModal, setShowBindPartnerModal, setBoundPartner, setPartnerPenaltyBalance,
-    setSquadName, setSquadGoalAmount, setInviteMichelle, setInviteXinying, setJoinCodeInput, setDepositAmount, setDepositFreq, setEditGoalAmount,
-    handleCreateSquad, handleJoinSquad, handleDeposit, handleEditGoal, handleProceedTransaction, copyToClipboard, getJoinCode,
+    setShowWarning, setShowCreateModal, setShowInviteModal, setShowJoinModal, setShowDepositModal, setShowHistoryModal, setShowMembersModal, setShowEditGoalModal, setShowBindPartnerModal, setShowCompletionModal, setShowGXBankModal, setBoundPartner, setPartnerPenaltyBalance,
+    setSquadName, setSquadGoalAmount, setSquadUsableStartDate, setSquadUsableEndDate, setInviteMichelle, setInviteXinying, setJoinCodeInput, setDepositAmount, setDepositFreq, setEditGoalAmount, setGxPaymentAmount, setLinkedGXPocket,
+    handleCreateSquad, handleJoinSquad, handleDeposit, handleEditGoal, handleProceedTransaction, handleGXBankPayment, copyToClipboard, getJoinCode,
     getWarningTitle, getWarningBodyText, getProceedButtonText, getCancelButtonText
   } = actions;
 
@@ -80,10 +83,49 @@ export function SamaSaveModals({ state, actions }: any) {
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
           <View style={styles.modalOverlay}>
             <View style={styles.createBox}>
-              <Text style={styles.createTitle}>Create New Category 🚀</Text>
+              <Text style={styles.createTitle}>Create New Pocket 🚀</Text>
               
               <TextInput style={styles.inputField} placeholder="e.g. Graduation Trip" placeholderTextColor="#6b7280" value={squadName} onChangeText={setSquadName} underlineColorAndroid="transparent" />
               <TextInput style={styles.inputField} placeholder="Target Goal Amount (RM)" placeholderTextColor="#6b7280" value={squadGoalAmount} onChangeText={setSquadGoalAmount} keyboardType="numeric" underlineColorAndroid="transparent" />
+              
+              <TouchableOpacity onPress={() => setShowStartDatePicker(true)} style={[styles.inputField, {justifyContent: 'center'}]}>
+                <Text style={{ color: squadUsableStartDate ? 'white' : '#6b7280', fontSize: 16 }}>
+                  {squadUsableStartDate ? `Usable From: ${squadUsableStartDate}` : "Usable From (Select Date)"}
+                </Text>
+              </TouchableOpacity>
+              {showStartDatePicker && (
+                <DateTimePicker
+                  value={squadUsableStartDate ? new Date(squadUsableStartDate) : new Date()}
+                  mode="date"
+                  display="default"
+                  onChange={(event: any, selectedDate?: Date) => {
+                    setShowStartDatePicker(Platform.OS === 'ios');
+                    if (selectedDate) {
+                      setSquadUsableStartDate(selectedDate.toISOString().split('T')[0]);
+                    }
+                  }}
+                />
+              )}
+
+              <TouchableOpacity onPress={() => setShowEndDatePicker(true)} style={[styles.inputField, {justifyContent: 'center'}]}>
+                <Text style={{ color: squadUsableEndDate ? 'white' : '#6b7280', fontSize: 16 }}>
+                  {squadUsableEndDate ? `Usable Until: ${squadUsableEndDate}` : "Usable Until (Select Date)"}
+                </Text>
+              </TouchableOpacity>
+              {showEndDatePicker && (
+                <DateTimePicker
+                  value={squadUsableEndDate ? new Date(squadUsableEndDate) : new Date()}
+                  mode="date"
+                  display="default"
+                  minimumDate={squadUsableStartDate ? new Date(squadUsableStartDate) : undefined}
+                  onChange={(event: any, selectedDate?: Date) => {
+                    setShowEndDatePicker(Platform.OS === 'ios');
+                    if (selectedDate) {
+                      setSquadUsableEndDate(selectedDate.toISOString().split('T')[0]);
+                    }
+                  }}
+                />
+              )}
 
               <View style={styles.inviteSection}>
                 <Text style={styles.inviteTitle}>Initial Members:</Text>
@@ -91,7 +133,7 @@ export function SamaSaveModals({ state, actions }: any) {
                 {renderInviteRow("Xinying", inviteXinying, setInviteXinying)}
               </View>
               
-              <TouchableOpacity style={styles.createSubmitButton} onPress={handleCreateSquad}><Text style={styles.createSubmitText}>Start Squad</Text></TouchableOpacity>
+              <TouchableOpacity style={styles.createSubmitButton} onPress={handleCreateSquad}><Text style={styles.createSubmitText}>Start Pocket</Text></TouchableOpacity>
               <TouchableOpacity onPress={() => setShowCreateModal(false)}><Text style={styles.cancelLinkText}>Cancel</Text></TouchableOpacity>
             </View>
           </View>
@@ -103,8 +145,8 @@ export function SamaSaveModals({ state, actions }: any) {
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
           <View style={styles.modalOverlay}>
             <View style={styles.createBox}>
-              <Text style={styles.createTitle}>Join a Squad 🤝</Text>
-              <Text style={styles.inviteTitle}>Enter the secret code from your friend to join their saving squad!</Text>
+              <Text style={styles.createTitle}>Join a Pocket 🤝</Text>
+              <Text style={styles.inviteTitle}>Enter the secret code from your friend to join their saving pocket!</Text>
               
               <TextInput 
                 style={[styles.inputField, { marginTop: 15, textTransform: 'uppercase', textAlign: 'center', fontSize: 20, letterSpacing: 2 }]} 
@@ -116,7 +158,7 @@ export function SamaSaveModals({ state, actions }: any) {
               />
 
               <TouchableOpacity style={[styles.createSubmitButton, { backgroundColor: '#22d3ee' }]} onPress={handleJoinSquad}>
-                <Text style={[styles.createSubmitText, { color: '#11081f' }]}>Join Squad</Text>
+                <Text style={[styles.createSubmitText, { color: '#11081f' }]}>Join Pocket</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => setShowJoinModal(false)}><Text style={styles.cancelLinkText}>Cancel</Text></TouchableOpacity>
             </View>
@@ -195,7 +237,7 @@ export function SamaSaveModals({ state, actions }: any) {
           <View style={styles.inviteCodeBox}>
             <MaterialCommunityIcons name="account-multiple-plus" size={50} color="#7c3aed" />
             <Text style={styles.inviteCodeTitle}>Invite Teammates 🤝</Text>
-            <Text style={styles.inviteCodeSub}>Share this code to save together in {activeSquad}!</Text>
+            <Text style={styles.inviteCodeSub}>Share this code to save together in {squadGoals[activeSquad]?.title || 'this pocket'}!</Text>
             <TouchableOpacity style={styles.codeContainer} onPress={() => copyToClipboard(getJoinCode())}>
               <Text style={styles.codeText} numberOfLines={1}>{getJoinCode()}</Text>
               <Ionicons name="copy-outline" size={18} color="#7c3aed" />
@@ -211,7 +253,7 @@ export function SamaSaveModals({ state, actions }: any) {
         <View style={styles.modalOverlay}>
           <View style={styles.historyBox}>
             <View style={styles.historyHeader}>
-              <Text style={styles.historyTitle}>Squad Members 👥</Text>
+              <Text style={styles.historyTitle}>Pocket Members 👥</Text>
               <TouchableOpacity onPress={() => setShowMembersModal(false)}><Ionicons name="close-circle" size={28} color="#9ca3af" /></TouchableOpacity>
             </View>
             <ScrollView>
@@ -261,6 +303,61 @@ export function SamaSaveModals({ state, actions }: any) {
           </View>
         </View>
       </Modal>
+
+      {/* Completion Modal */}
+      <Modal visible={showCompletionModal} animationType="fade" transparent={true}>
+        <View style={styles.modalOverlay}>
+          <View style={[styles.createBox, { borderColor: '#10b981', borderWidth: 2, alignItems: 'center' }]}>
+            <MaterialCommunityIcons name="party-popper" size={60} color="#10b981" />
+            <Text style={[styles.createTitle, { marginTop: 15, textAlign: 'center' }]}>Awesome trip!</Text>
+            <Text style={[styles.inviteTitle, { textAlign: 'center', lineHeight: 22, fontSize: 16 }]}>
+              Zini you survived with RM {completedAmount} left, the money will be credited to your main account!
+            </Text>
+            <TouchableOpacity style={[styles.createSubmitButton, { backgroundColor: '#10b981', marginTop: 10 }]} onPress={() => setShowCompletionModal(false)}>
+              <Text style={styles.createSubmitText}>Awesome!</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* GXBank Payment Modal */}
+      <Modal visible={showGXBankModal} animationType="slide" transparent={true}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+          <View style={styles.modalOverlay}>
+            <View style={styles.createBox}>
+              <Text style={styles.createTitle}>Simulate GX Card Swipe 💳</Text>
+              
+              <TextInput 
+                style={[styles.inputField, { fontSize: 24, textAlign: 'center', fontWeight: 'bold', color: '#10b981' }]} 
+                placeholder="RM 0.00" 
+                placeholderTextColor="#6b7280" 
+                value={gxPaymentAmount} 
+                onChangeText={setGxPaymentAmount} 
+                keyboardType="numeric" 
+              />
+
+              <View style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)', padding: 15, borderRadius: 10, borderWidth: 1, borderColor: '#10b981', marginBottom: 20, alignItems: 'center' }}>
+                <Text style={{ color: '#9ca3af', fontSize: 12, marginBottom: 5 }}>Current Payment Source</Text>
+                <Text style={{ color: '#10b981', fontSize: 16, fontWeight: 'bold', textAlign: 'center' }}>
+                  {linkedGXPocket ? (squadGoals[linkedGXPocket]?.title || 'Linked Pocket') : 'Main Account'}
+                </Text>
+                {linkedGXPocket && (
+                  <Text style={{ color: '#e5e7eb', fontSize: 13, marginTop: 5 }}>
+                    Available to swipe: RM {((membersData[linkedGXPocket] || []).find((m: any) => m.id === 'z') || { saved: 0 }).saved}
+                  </Text>
+                )}
+              </View>
+
+              <TouchableOpacity style={[styles.createSubmitButton, { backgroundColor: '#10b981' }]} onPress={handleGXBankPayment}>
+                <Text style={styles.createSubmitText}>Swipe Card</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setShowGXBankModal(false)}>
+                <Text style={styles.cancelLinkText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
     </>
   );
 }
@@ -308,4 +405,8 @@ const styles = StyleSheet.create({
   feedText: { color: '#e5e7eb', fontSize: 13, flex: 1, lineHeight: 18 },
   feedName: { fontWeight: 'bold', color: 'white' },
   feedCategoryLabel: { color: '#7c3aed', fontSize: 10, fontWeight: 'bold', marginTop: 3 },
+  pocketSelectBtn: { padding: 12, borderRadius: 10, borderWidth: 1, borderColor: '#2d1b4e', marginBottom: 10, backgroundColor: '#11081f' },
+  pocketSelectBtnActive: { borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)' },
+  pocketSelectText: { color: '#e5e7eb', fontSize: 14, fontWeight: 'bold' },
+  pocketSelectTextActive: { color: '#10b981' },
 });

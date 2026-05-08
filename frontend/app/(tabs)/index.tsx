@@ -15,6 +15,9 @@ export default function App() {
   const [showMembersModal, setShowMembersModal] = useState(false);
   const [showEditGoalModal, setShowEditGoalModal] = useState(false); 
   const [showBindPartnerModal, setShowBindPartnerModal] = useState(false);
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
+  const [showGXBankModal, setShowGXBankModal] = useState(false);
+  const [completedAmount, setCompletedAmount] = useState(0);
   
   // Tab and squad selection states
   const [activeTab, setActiveTab] = useState('Home');
@@ -30,67 +33,71 @@ export default function App() {
   
   // Initial squad list
   const [squads, setSquads] = useState([
-    { id: 'Besties', name: '👯‍♀️ Besties' },
-    { id: 'Family', name: '🏠 Family' },
-    { id: 'JapanTrip', name: '✈️ Japan 2026' }
+    { id: 'KLTripFund', name: 'KL Trip Fund 🌴', isCompleted: false },
+    { id: 'NewTVFund', name: 'New TV Fund 📺', isCompleted: false },
+    { id: 'OsakaTrip', name: 'Osaka Trip 🍣', isCompleted: true }
   ]);
   
   // Form states
   const [squadName, setSquadName] = useState('');
   const [squadGoalAmount, setSquadGoalAmount] = useState(''); 
+  const [squadUsableStartDate, setSquadUsableStartDate] = useState('');
+  const [squadUsableEndDate, setSquadUsableEndDate] = useState('');
   const [inviteMichelle, setInviteMichelle] = useState(false);
   const [inviteXinying, setInviteXinying] = useState(false); 
   const [editGoalAmount, setEditGoalAmount] = useState('');
   const [joinCodeInput, setJoinCodeInput] = useState(''); 
   const [depositAmount, setDepositAmount] = useState('');
   const [depositFreq, setDepositFreq] = useState('One-time'); 
+  const [gxPaymentAmount, setGxPaymentAmount] = useState('');
+  const [linkedGXPocket, setLinkedGXPocket] = useState<string | null>(null);
 
   // ==========================================
   // DYNAMIC MEMBERS & LEADERBOARD (SCENARIO B)
   // 'saved' is for overall progress, 'weekly' is for leaderboard ranking
   // ==========================================
   const [membersData, setMembersData] = useState<any>({
-    Besties: [
+    KLTripFund: [
       { id: 'z', name: 'Zini(You)', initial: 'Z', color: '#7c3aed', saved: 1260, weekly: 40, target: 2000, status: 'Safe 🛡️' },
       { id: 'x', name: 'Xinying', initial: 'X', color: '#f43f5e', saved: 1400, weekly: 120, target: 2000, status: 'Safe 🛡️' },
       { id: 'm', name: 'Michelle', initial: 'M', color: '#22d3ee', saved: 900, weekly: 15, target: 2000, status: 'Warning ⚠️' }
     ],
-    Family: [
+    NewTVFund: [
       { id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: 800, weekly: 100, target: 3000, status: 'On Track 🎯' }
     ],
-    JapanTrip: [
+    OsakaTrip: [
       { id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: 4500, weekly: 500, target: 8000, status: 'Ready for Sushi 🍣' }
     ]
   });
 
   // Dynamic shared goals 
   const [squadGoals, setSquadGoals] = useState<any>({
-    Besties: { title: 'KL Trip Fund', target: 2000 },
-    Family: { title: 'New TV Fund', target: 3000 },
-    JapanTrip: { title: 'Osaka Universal Studio', target: 8000 }
+    KLTripFund: { title: 'KL Trip Fund', target: 2000, startDate: '2026-05-01', endDate: '2026-05-31' },
+    NewTVFund: { title: 'New TV Fund', target: 3000, startDate: '2026-01-01', endDate: '2026-04-30' },
+    OsakaTrip: { title: 'Osaka Trip', target: 8000, startDate: '2026-06-01', endDate: '2026-08-31' }
   });
 
   // Activity feed data
   const [activities, setActivities] = useState<any>({
-    Besties: [
-      { id: 1, user: 'Michelle', msg: 'paid RM5.50 Sin Tax for 2AM McDonald\'s. 🍔', cat: 'Besties', icon: 'food-hot-dog', color: '#f43f5e' },
-      { id: 2, user: 'Xinying', msg: 'avoided a Shopee impulse checkout! +10 Pts. 🛡️', cat: 'Besties', icon: 'shield-star-outline', color: '#22d3ee' },
+    KLTripFund: [
+      { id: 1, user: 'Michelle', msg: 'paid RM5.50 Sin Tax for 2AM McDonald\'s. 🍔', cat: 'KL Trip Fund', icon: 'food-hot-dog', color: '#f43f5e' },
+      { id: 2, user: 'Xinying', msg: 'avoided a Shopee impulse checkout! +10 Pts. 🛡️', cat: 'KL Trip Fund', icon: 'shield-star-outline', color: '#22d3ee' },
     ],
-    JapanTrip: [
-      { id: 1, user: 'Zini', msg: 'saved RM150 for the Osaka Universal Studio! 🎢', cat: 'Japan 2026', icon: 'airplane-takeoff', color: '#22d3ee' },
+    OsakaTrip: [
+      { id: 1, user: 'Zini', msg: 'saved RM150 for the Osaka Universal Studio! 🎢', cat: 'Osaka Trip', icon: 'airplane-takeoff', color: '#22d3ee' },
     ],
     All: [
-      { id: 1, user: 'Michelle', msg: 'paid RM5.50 Sin Tax for 2AM McDonald\'s. 🍔', cat: 'Besties', icon: 'food-hot-dog', color: '#f43f5e' },
-      { id: 2, user: 'Zini', msg: 'saved RM150 for the Osaka Universal Studio! 🎢', cat: 'Japan 2026', icon: 'airplane-takeoff', color: '#22d3ee' },
-      { id: 3, user: 'Xinying', msg: 'avoided a Shopee impulse checkout! +10 Pts. 🛡️', cat: 'Besties', icon: 'shield-star-outline', color: '#22d3ee' },
+      { id: 1, user: 'Michelle', msg: 'paid RM5.50 Sin Tax for 2AM McDonald\'s. 🍔', cat: 'KL Trip Fund', icon: 'food-hot-dog', color: '#f43f5e' },
+      { id: 2, user: 'Zini', msg: 'saved RM150 for the Osaka Universal Studio! 🎢', cat: 'Osaka Trip', icon: 'airplane-takeoff', color: '#22d3ee' },
+      { id: 3, user: 'Xinying', msg: 'avoided a Shopee impulse checkout! +10 Pts. 🛡️', cat: 'KL Trip Fund', icon: 'shield-star-outline', color: '#22d3ee' },
     ]
   });
 
   // Generates the join code based on the active squad selection.
   const getJoinCode = () => {
-    if (activeSquad === 'Besties') return 'SAMA-BFF-2026';
-    if (activeSquad === 'Family') return 'SAMA-FAM-7788';
-    if (activeSquad === 'JapanTrip') return 'SAMA-OSAKA-ZN';
+    if (activeSquad === 'KLTripFund') return 'SAMA-KL-2026';
+    if (activeSquad === 'NewTVFund') return 'SAMA-TV-7788';
+    if (activeSquad === 'OsakaTrip') return 'SAMA-OSAKA-ZN';
     return `SAMA-${activeSquad.toUpperCase()}-26`;
   };
 
@@ -101,7 +108,7 @@ export default function App() {
       return;
     }
     const newSquadId = squadName.replace(/\s+/g, '');
-    const newSquadName = `${squadName} ✨`;
+    const newSquadName = `${squadName}`;
     const targetAmount = parseFloat(squadGoalAmount) || 1000; 
     
     const newMembers = [{ id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: targetAmount, weekly: 0, target: targetAmount, status: 'Leader 👑' }]; 
@@ -109,13 +116,15 @@ export default function App() {
     if (inviteXinying) newMembers.push({ id: 'x', name: 'Xinying', initial: 'X', color: '#f43f5e', saved: targetAmount * 0.9, weekly: 0, target: targetAmount, status: 'Catching up 🏃' });
 
     setMembersData((prev: any) => ({ ...prev, [newSquadId]: newMembers }));
-    setSquadGoals((prev: any) => ({ ...prev, [newSquadId]: { title: squadName, target: targetAmount } }));
-    setSquads([...squads, { id: newSquadId, name: newSquadName }]);
+    setSquadGoals((prev: any) => ({ ...prev, [newSquadId]: { title: squadName, target: targetAmount, startDate: squadUsableStartDate, endDate: squadUsableEndDate } }));
+    setSquads([...squads, { id: newSquadId, name: newSquadName, isCompleted: false }]);
     setActiveSquad(newSquadId);
     
     setShowCreateModal(false);
     setSquadName('');
     setSquadGoalAmount('');
+    setSquadUsableStartDate('');
+    setSquadUsableEndDate('');
     setInviteMichelle(false);
     setInviteXinying(false);
   };
@@ -139,7 +148,7 @@ export default function App() {
     }
 
     const newSquadId = 'JoinedSquad' + Date.now(); 
-    const newSquadName = `🚀 ${dynamicName} Trip`; 
+    const newSquadName = `${dynamicName} Fund`; 
     const targetAmount = 15000; 
 
     const newMembers = [
@@ -217,6 +226,23 @@ export default function App() {
     Alert.alert("Saved!", `RM ${amount.toFixed(2)} has been moved to your pocket.`);
   };
 
+  // Simulates the end date arriving, closing the pocket and transferring remaining back.
+  const handleSimulateCompletion = () => {
+    const goal = squadGoals[activeSquad] || { title: 'New Squad Goal', target: 1000 };
+    const ziniData = (membersData[activeSquad] || []).find((m: any) => m.id === 'z') || { saved: 0 };
+    const currentSaved = ziniData.saved;
+    
+    setSquads((prev: any) => prev.map((s: any) => s.id === activeSquad ? { ...s, isCompleted: true } : s));
+    
+    if (currentSaved > 0) {
+      setCompletedAmount(currentSaved);
+      setShowCompletionModal(true);
+      setTotalBalance((prev: number) => prev + currentSaved);
+    } else {
+      Alert.alert("Pocket Completed", "Pocket closed. No remaining balance to transfer.");
+    }
+  };
+
   // Copies the squad join code to the device clipboard.
   const copyToClipboard = (code: string) => {
     Clipboard.setString(code);
@@ -234,7 +260,7 @@ export default function App() {
   const getWarningBodyText = () => {
     if (aiMode === 'Gentle') return "We noticed a late-night checkout for RM 50.00. Proceeding with this purchase will delay your saving goal by at least 3 days. Is it worth it?";
     if (aiMode === 'Strict') return "Late-night non-essential spending detected. To unlock this RM 50.00 transaction, you must pay a 3% penalty (RM 1.50) to your Accountability Partner.";
-    return "High-risk impulse buy detected! To proceed, you will pay an 8% Penalty (RM 4.00) to your Accountability Partner AND we will broadcast this shame to your active squad. Don't do it.";
+    return "High-risk impulse buy detected! To proceed, you will pay an 8% Penalty (RM 4.00) to your Accountability Partner AND we will broadcast this shame to your pocket members. Don't do it.";
   };
 
   // Returns the text for the button that forces the transaction to go through.
@@ -277,14 +303,99 @@ export default function App() {
       const penalty = itemCost * 0.03; // 3% penalty = 1.50
       setTotalBalance((prev: number) => prev - (itemCost + penalty));
       setPartnerPenaltyBalance((prev: number) => prev + penalty); 
-      Alert.alert("Action Taken", `Transaction approved. RM ${(itemCost + penalty).toFixed(2)} deducted. RM ${penalty.toFixed(2)} sent to ${boundPartner}.`, [{ text: "OK", onPress: () => setShowWarning(false) }]);
+
+      const penaltyActivity = {
+        id: Date.now(),
+        user: 'Zini',
+        msg: `couldn't resist temptation! Paid RM ${penalty.toFixed(2)} penalty to ${boundPartner} 🥊`,
+        cat: 'Global Feed',
+        icon: 'alert-octagon',
+        color: '#f59e0b' 
+      };
+
+      setActivities((prev: any) => ({
+        ...prev,
+        All: [penaltyActivity, ...(prev.All || [])]
+      }));
+
+      Alert.alert("Action Taken", `Transaction approved. RM ${(itemCost + penalty).toFixed(2)} deducted. RM ${penalty.toFixed(2)} sent to ${boundPartner} and broadcasted to main feed!`, [{ text: "OK", onPress: () => setShowWarning(false) }]);
     
     } else {
       const penalty = itemCost * 0.08; // 8% penalty = 4.00
       setTotalBalance((prev: number) => prev - (itemCost + penalty));
       setPartnerPenaltyBalance((prev: number) => prev + penalty); 
+
+      const penaltyActivity = {
+        id: Date.now(),
+        user: 'Zini',
+        msg: `succumbed to a high-risk impulse buy! Paid RM ${penalty.toFixed(2)} penalty to ${boundPartner} 🔥`,
+        cat: 'Shame Board',
+        icon: 'fire',
+        color: '#f43f5e' 
+      };
+
+      setActivities((prev: any) => ({
+        ...prev,
+        All: [penaltyActivity, ...(prev.All || [])]
+      }));
+
       Alert.alert("Action Taken", `Transaction approved. RM ${(itemCost + penalty).toFixed(2)} deducted. RM ${penalty.toFixed(2)} sent to ${boundPartner} and broadcasted!`, [{ text: "OK", onPress: () => setShowWarning(false) }]);
     }
+  };
+
+  // Executes a payment via GXBank, deducting from either the Main Account or the linked pocket.
+  const handleGXBankPayment = () => {
+    const amount = parseFloat(gxPaymentAmount);
+    if (!amount || amount <= 0) {
+      Alert.alert("Error", "Please enter a valid amount.");
+      return;
+    }
+
+    if (!linkedGXPocket) {
+      if (amount > totalBalance) {
+        Alert.alert("Failed", "Insufficient balance in Main Account.");
+        return;
+      }
+      setTotalBalance(prev => prev - amount);
+      Alert.alert("Success", `RM ${amount.toFixed(2)} swiped via GXBank from Main Account.`);
+    } else {
+      const ziniData = (membersData[linkedGXPocket] || []).find((m: any) => m.id === 'z') || { saved: 0 };
+      if (amount > ziniData.saved) {
+        Alert.alert("Failed", `Insufficient funds in ${squadGoals[linkedGXPocket]?.title}.`);
+        return;
+      }
+      
+      setMembersData((prev: any) => {
+        const squadMembers = prev[linkedGXPocket] || [];
+        const updatedMembers = squadMembers.map((m: any) => {
+          if (m.id === 'z') {
+            return { ...m, saved: m.saved - amount };
+          }
+          return m;
+        });
+        return { ...prev, [linkedGXPocket]: updatedMembers };
+      });
+
+      const newActivity = {
+        id: Date.now(),
+        user: 'Zini',
+        msg: `swiped RM ${amount.toFixed(2)} using GX Card from this pocket! 💳`,
+        cat: squadGoals[linkedGXPocket]?.title || 'Pocket',
+        icon: 'credit-card-outline',
+        color: '#22d3ee' 
+      };
+
+      setActivities((prev: any) => ({
+        ...prev,
+        [linkedGXPocket]: [newActivity, ...(prev[linkedGXPocket] || [])],
+        All: [newActivity, ...(prev.All || [])]
+      }));
+
+      Alert.alert("Success", `RM ${amount.toFixed(2)} swiped via GX Card from ${squadGoals[linkedGXPocket]?.title}.`);
+    }
+
+    setShowGXBankModal(false);
+    setGxPaymentAmount('');
   };
 
   // Renders the progress bar for the currently active squad's savings goal.
@@ -347,7 +458,7 @@ export default function App() {
 
           return (
             <View key={member.id}>
-              {renderRankRow(medal, member.name, scoreDisplay, member.status, bonusTag)}
+              {renderRankRow(medal, member.name, scoreDisplay, member.status, bonusTag, member.saved, member.target)}
               {index < sortedMembers.length - 1 && <View style={styles.divider} />}
             </View>
           );
@@ -358,15 +469,15 @@ export default function App() {
 
   // Collect all states for the Modals component
   const modalStates = {
-    showWarning, showCreateModal, showInviteModal, showJoinModal, showDepositModal, showHistoryModal, showMembersModal, showEditGoalModal, showBindPartnerModal,
-    aiMode, squadName, squadGoalAmount, inviteMichelle, inviteXinying, joinCodeInput, depositAmount, depositFreq, editGoalAmount, activeSquad, squadGoals, membersData, activities
+    showWarning, showCreateModal, showInviteModal, showJoinModal, showDepositModal, showHistoryModal, showMembersModal, showEditGoalModal, showBindPartnerModal, showCompletionModal, showGXBankModal,
+    aiMode, squadName, squadGoalAmount, squadUsableStartDate, squadUsableEndDate, inviteMichelle, inviteXinying, joinCodeInput, depositAmount, depositFreq, editGoalAmount, gxPaymentAmount, linkedGXPocket, activeSquad, squads, squadGoals, membersData, activities, completedAmount
   };
 
   // Collect all actions for the Modals component
   const modalActions = {
-    setShowWarning, setShowCreateModal, setShowInviteModal, setShowJoinModal, setShowDepositModal, setShowHistoryModal, setShowMembersModal, setShowEditGoalModal, setShowBindPartnerModal, setBoundPartner, setPartnerPenaltyBalance,
-    setSquadName, setSquadGoalAmount, setInviteMichelle, setInviteXinying, setJoinCodeInput, setDepositAmount, setDepositFreq, setEditGoalAmount,
-    handleCreateSquad, handleJoinSquad, handleDeposit, handleEditGoal, handleProceedTransaction, copyToClipboard, getJoinCode,
+    setShowWarning, setShowCreateModal, setShowInviteModal, setShowJoinModal, setShowDepositModal, setShowHistoryModal, setShowMembersModal, setShowEditGoalModal, setShowBindPartnerModal, setShowCompletionModal, setShowGXBankModal, setBoundPartner, setPartnerPenaltyBalance,
+    setSquadName, setSquadGoalAmount, setSquadUsableStartDate, setSquadUsableEndDate, setInviteMichelle, setInviteXinying, setJoinCodeInput, setDepositAmount, setDepositFreq, setEditGoalAmount, setGxPaymentAmount, setLinkedGXPocket,
+    handleCreateSquad, handleJoinSquad, handleDeposit, handleEditGoal, handleProceedTransaction, handleGXBankPayment, copyToClipboard, getJoinCode,
     getWarningTitle, getWarningBodyText, getProceedButtonText, getCancelButtonText
   };
 
@@ -409,7 +520,7 @@ export default function App() {
             <View style={styles.actionsContainer}>
               <TouchableOpacity style={styles.actionItem}><View style={styles.actionIconBg}><Ionicons name="add" size={24} color="white" /></View><Text style={styles.actionText}>Add money</Text></TouchableOpacity>
               <TouchableOpacity style={styles.actionItem} onPress={() => setShowWarning(true)}><View style={styles.actionIconBg}><MaterialCommunityIcons name="qrcode-scan" size={20} color="white" /></View><Text style={styles.actionText}>Scan QR</Text></TouchableOpacity>
-              <TouchableOpacity style={styles.actionItem}><View style={styles.actionIconBg}><Ionicons name="send" size={20} color="white" /></View><Text style={styles.actionText}>Send money</Text></TouchableOpacity>
+              <TouchableOpacity style={styles.actionItem} onPress={() => setShowGXBankModal(true)}><View style={styles.actionIconBg}><MaterialCommunityIcons name="credit-card-wireless-outline" size={20} color="white" /></View><Text style={styles.actionText}>Swipe GX Card</Text></TouchableOpacity>
             </View>
 
             <View style={styles.sectionHeader}>
@@ -480,45 +591,48 @@ export default function App() {
               <Text style={styles.modeDescription}>{getModeDescription()}</Text>
             </View>
 
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 20 }}>
-              <TouchableOpacity onPress={() => setActiveSquad('All')} style={[styles.squadBadge, activeSquad === 'All' && styles.squadBadgeActive]}>
-                <MaterialCommunityIcons name="view-grid-outline" size={16} color={activeSquad === 'All' ? "white" : "#9ca3af"} style={{ marginRight: 4 }} />
-                <Text style={[styles.squadText, activeSquad === 'All' && styles.squadTextActive]}>All</Text>
-              </TouchableOpacity>
-              
-              {squads.map((squad) => (
-                <TouchableOpacity key={squad.id} onPress={() => setActiveSquad(squad.id)} style={[styles.squadBadge, activeSquad === squad.id && styles.squadBadgeActive]}>
-                  <Text style={[styles.squadText, activeSquad === squad.id && styles.squadTextActive]}>{squad.name}</Text>
-                </TouchableOpacity>
-              ))}
-              
-              <TouchableOpacity onPress={() => setShowCreateModal(true)} style={styles.squadBadgeDashed}>
-                <Ionicons name="add" size={16} color="#9ca3af" />
-                <Text style={styles.squadText}>New</Text>
-              </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => setShowJoinModal(true)} style={[styles.squadBadgeDashed, { borderColor: '#22d3ee' }]}>
-                <MaterialCommunityIcons name="login" size={16} color="#22d3ee" style={{ marginRight: 4 }} />
-                <Text style={[styles.squadText, { color: '#22d3ee' }]}>Join</Text>
-              </TouchableOpacity>
-            </ScrollView>
             
             <View style={styles.leaderboardBox}>
               {activeSquad === 'All' ? (
-                <View style={styles.gridContainer}>
-                  <Text style={styles.gridHeader}>Squad Categories 📁</Text>
-                  {squads.map((squad) => (
-                    <TouchableOpacity key={squad.id} style={styles.categoryCard} onPress={() => setActiveSquad(squad.id)}>
-                      <Text style={styles.categoryCardTitle}>{squad.name}</Text>
-                      <Text style={styles.categoryCardLink}>View Board &gt;</Text>
+                <View>
+                  <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15}}>
+                    <Text style={[styles.gridHeader, {marginBottom: 0}]}>Your Pockets 📁</Text>
+                  </View>
+                  {squads.map((squad) => {
+                    const goal = squadGoals[squad.id] || { target: 1000 };
+                    const ziniData = (membersData[squad.id] || []).find((m: any) => m.id === 'z') || { saved: 0 };
+                    const progressPercent = Math.min((ziniData.saved / goal.target) * 100, 100) + '%';
+                    return (
+                      <TouchableOpacity key={squad.id} style={[styles.categoryCard, { width: '100%', height: 'auto', flexDirection: 'row', alignItems: 'center', opacity: squad.isCompleted ? 0.6 : 1 }]} onPress={() => setActiveSquad(squad.id)}>
+                        <View style={{flex: 1}}>
+                          <Text style={[styles.categoryCardTitle, { fontSize: 16 }]}>{squad.name} {squad.isCompleted ? '(Done)' : ''}</Text>
+                          <Text style={{color: '#9ca3af', fontSize: 12, marginTop: 4}}>My Progress: RM {ziniData.saved} / RM {goal.target}</Text>
+                          <View style={[styles.progressBarBg, { height: 4, marginTop: 8, marginBottom: 0, width: '80%' }]}>
+                            <View style={[styles.progressBarFill, {width: progressPercent as any}]} />
+                          </View>
+                        </View>
+                        <MaterialCommunityIcons name="chevron-right" size={24} color="#7c3aed" />
+                      </TouchableOpacity>
+                    );
+                  })}
+                  <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}}>
+                    <TouchableOpacity style={[styles.createMainButton, {flex: 1, marginRight: 5, marginTop: 0}]} onPress={() => setShowCreateModal(true)}>
+                      <Ionicons name="add-circle" size={20} color="white" style={{marginRight: 6}}/>
+                      <Text style={styles.inviteButtonText}>Create Pocket</Text>
                     </TouchableOpacity>
-                  ))}
-                  <TouchableOpacity style={[styles.categoryCard, styles.categoryCardDashed]} onPress={() => setShowCreateModal(true)}>
-                    <Ionicons name="add" size={24} color="#6b7280" /><Text style={styles.categoryCardPlaceholder}>Create New</Text>
-                  </TouchableOpacity>
+                    <TouchableOpacity style={[styles.createMainButton, {flex: 1, marginLeft: 5, marginTop: 0, backgroundColor: 'transparent', borderWidth: 1, borderColor: '#22d3ee'}]} onPress={() => setShowJoinModal(true)}>
+                      <MaterialCommunityIcons name="login" size={20} color="#22d3ee" style={{marginRight: 6}}/>
+                      <Text style={[styles.inviteButtonText, {color: '#22d3ee'}]}>Join Pocket</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               ) : (
                 <View>
+                  <TouchableOpacity onPress={() => setActiveSquad('All')} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 15 }}>
+                    <MaterialCommunityIcons name="arrow-left" size={20} color="#22d3ee" />
+                    <Text style={{ color: '#22d3ee', fontWeight: 'bold', marginLeft: 5 }}>Back to Pockets</Text>
+                  </TouchableOpacity>
                   <View style={styles.squadInfoRow}>
                     <View style={{ flexDirection: 'row', alignItems: 'baseline' }}>
                       <Text style={styles.squadBoardTitle}>Members</Text>
@@ -535,6 +649,38 @@ export default function App() {
                     </View>
                   </View>
                   <View style={styles.divider} />
+
+                  {squads.find((s:any) => s.id === activeSquad)?.isCompleted ? (
+                    <View style={{ backgroundColor: '#374151', padding: 15, borderRadius: 10, marginBottom: 15, alignItems: 'center' }}>
+                      <Text style={{ color: '#9ca3af', fontWeight: 'bold' }}>This pocket is completed and closed. 🔒</Text>
+                    </View>
+                  ) : (
+                    <>
+                      <TouchableOpacity style={[styles.depositBtn, { alignSelf: 'center', backgroundColor: '#4b5563', marginBottom: 15 }]} onPress={handleSimulateCompletion}>
+                        <Text style={styles.depositBtnText}>Simulate End Date 📅</Text>
+                      </TouchableOpacity>
+                      
+                      <View style={{ backgroundColor: linkedGXPocket === activeSquad ? 'rgba(16, 185, 129, 0.1)' : '#1f1b2e', padding: 15, borderRadius: 10, marginBottom: 15, borderWidth: 1, borderColor: linkedGXPocket === activeSquad ? '#10b981' : '#2d1b4e', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <View style={{flex: 1, marginRight: 10}}>
+                          <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 14 }}>Link to GX Card 💳</Text>
+                          <Text style={{ color: '#9ca3af', fontSize: 12, marginTop: 4 }}>
+                            {linkedGXPocket === activeSquad ? 'Card swipes will prioritize deducting from this pocket.' : 'Make this the default payment source for your physical card during the usable period'}
+                          </Text>
+                        </View>
+                        <TouchableOpacity 
+                          onPress={() => setLinkedGXPocket(linkedGXPocket === activeSquad ? null : activeSquad)}
+                          style={{
+                            width: 50, height: 28, borderRadius: 14, 
+                            backgroundColor: linkedGXPocket === activeSquad ? '#10b981' : '#4b5563',
+                            padding: 2, justifyContent: 'center',
+                            alignItems: linkedGXPocket === activeSquad ? 'flex-end' : 'flex-start'
+                          }}
+                        >
+                          <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: 'white' }} />
+                        </TouchableOpacity>
+                      </View>
+                    </>
+                  )}
 
                   {renderGoalProgress()}
 
@@ -576,12 +722,7 @@ export default function App() {
               )}
             </View>
 
-            {activeSquad === 'All' ? (
-              <TouchableOpacity style={styles.createMainButton} onPress={() => setShowCreateModal(true)}>
-                <Ionicons name="add-circle" size={22} color="white" style={{marginRight: 8}}/>
-                <Text style={styles.inviteButtonText}>Create New Category</Text>
-              </TouchableOpacity>
-            ) : (
+            {activeSquad !== 'All' && (
               <TouchableOpacity style={styles.inviteButton} onPress={() => setShowInviteModal(true)}>
                 <Ionicons name="person-add" size={18} color="white" style={{marginRight: 8}}/>
                 <Text style={styles.inviteButtonText}>Invite Friends</Text>
@@ -610,22 +751,33 @@ export default function App() {
 }
 
 // Renders a single row in the squad leaderboard, displaying the user's rank and score.
-const renderRankRow = (medal: any, name: any, score: any, status: any, bonusText: any = null) => (
+const renderRankRow = (medal: any, name: any, score: any, status: any, bonusText: any = null, saved: any = 0, target: any = 1000) => {
+  const progressPercent = Math.min((saved / target) * 100, 100) + '%';
+  return (
   <View style={styles.rankRow}>
     <Text style={styles.rankMedal}>{medal}</Text>
     <View style={styles.rankInfo}>
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <Text style={styles.rankName}>{name}</Text>
-        {bonusText && (
-          <View style={styles.bonusBadge}>
-            <Text style={styles.bonusText}>{bonusText}</Text>
-          </View>
-        )}
+      <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Text style={styles.rankName}>{name}</Text>
+          {bonusText && (
+            <View style={styles.bonusBadge}>
+              <Text style={styles.bonusText}>{bonusText}</Text>
+            </View>
+          )}
+        </View>
+        <Text style={styles.rankStatusSafe}>{score}</Text>
       </View>
-      <Text style={styles.rankStatusSafe}>{score} | {status}</Text>
+      <View style={[styles.progressBarBg, { height: 4, marginTop: 6, marginBottom: 4 }]}>
+        <View style={[styles.progressBarFill, {width: progressPercent as any, backgroundColor: status.includes('Safe') || status.includes('Ready') ? '#10b981' : (status.includes('Warning') ? '#f59e0b' : '#22d3ee')}]} />
+      </View>
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <Text style={{color: '#9ca3af', fontSize: 10}}>Progress: RM {saved} / {target}</Text>
+        <Text style={styles.rankStatusSafe}>{status}</Text>
+      </View>
     </View>
   </View>
-);
+)};
 
 // Renders a navigation item icon and label for the bottom navigation bar.
 const renderNavItem = (icon: any, label: any, isActive: any, onPress: any) => (
