@@ -519,6 +519,7 @@ export default function App() {
 
             <View style={styles.actionsContainer}>
               <TouchableOpacity style={styles.actionItem}><View style={styles.actionIconBg}><Ionicons name="add" size={24} color="white" /></View><Text style={styles.actionText}>Add money</Text></TouchableOpacity>
+              <TouchableOpacity style={styles.actionItem}><View style={styles.actionIconBg}><MaterialCommunityIcons name="swap-horizontal" size={24} color="white" /></View><Text style={styles.actionText}>Transfer</Text></TouchableOpacity>
               <TouchableOpacity style={styles.actionItem} onPress={() => setShowWarning(true)}><View style={styles.actionIconBg}><MaterialCommunityIcons name="qrcode-scan" size={20} color="white" /></View><Text style={styles.actionText}>Scan QR</Text></TouchableOpacity>
               <TouchableOpacity style={styles.actionItem} onPress={() => setShowGXBankModal(true)}><View style={styles.actionIconBg}><MaterialCommunityIcons name="credit-card-wireless-outline" size={20} color="white" /></View><Text style={styles.actionText}>Swipe GX Card</Text></TouchableOpacity>
             </View>
