@@ -476,8 +476,8 @@ export default function App() {
     return (
       <View>
         {sortedMembers.map((member: any, index: number) => {
-          const isFirstPlace = index === 0;
-          const medal = medals[index] || "🏅"; 
+          const isFirstPlace = index === 0 && currentMembers.length > 1;
+          const medal = currentMembers.length > 1 ? (medals[index] || "🏅") : "👤"; 
           
           const bonusTag = isFirstPlace ? "+0.5% Interest 💸" : null;
           
@@ -771,14 +771,25 @@ export default function App() {
                   {renderGoalProgress()}
 
                   {/* WEEKLY REWARD INFO BOX */}
-                  <View style={{ backgroundColor: '#2d1b4e', padding: 12, borderRadius: 10, marginBottom: 15, borderWidth: 1, borderColor: '#7c3aed' }}>
-                    <Text style={{ color: '#22d3ee', fontSize: 12, fontWeight: 'bold', marginBottom: 4 }}>
-                      ⏳ Weekly Reward Snapshot (Mon 00:00)
-                    </Text>
-                    <Text style={{ color: '#9ca3af', fontSize: 11, lineHeight: 16 }}>
-                      Rank #1 earns 0.5% interest on their NEW weekly deposits (Maximum of RM 5.00/week 💸)
-                    </Text>
-                  </View>
+                  {(membersData[activeSquad] || []).length > 1 ? (
+                    <View style={{ backgroundColor: '#2d1b4e', padding: 12, borderRadius: 10, marginBottom: 15, borderWidth: 1, borderColor: '#7c3aed' }}>
+                      <Text style={{ color: '#22d3ee', fontSize: 12, fontWeight: 'bold', marginBottom: 4 }}>
+                        ⏳ Weekly Reward Snapshot (Mon 00:00)
+                      </Text>
+                      <Text style={{ color: '#9ca3af', fontSize: 11, lineHeight: 16 }}>
+                        Rank #1 earns 0.5% interest on their NEW weekly deposits (Maximum of RM 5.00/week 💸)
+                      </Text>
+                    </View>
+                  ) : (
+                    <View style={{ backgroundColor: 'rgba(244, 63, 94, 0.15)', padding: 12, borderRadius: 10, marginBottom: 15, borderWidth: 1, borderColor: 'rgba(244, 63, 94, 0.3)' }}>
+                      <Text style={{ color: '#f43f5e', fontSize: 12, textAlign: 'center', fontWeight: 'bold' }}>
+                        ⚠️ Solo Pocket Detected
+                      </Text>
+                      <Text style={{ color: '#f43f5e', fontSize: 11, textAlign: 'center', marginTop: 4 }}>
+                        Invite friends to unlock Weekly Rewards! This pocket will auto-close if no one joins within 24 hours.
+                      </Text>
+                    </View>
+                  )}
 
                   {renderDynamicLeaderboard()}
                 </View>

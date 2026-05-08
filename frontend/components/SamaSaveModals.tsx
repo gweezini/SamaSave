@@ -83,8 +83,9 @@ export function SamaSaveModals({ state, actions }: any) {
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
           <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <View style={styles.modalOverlay}>
-              <View style={styles.createBox}>
-              <Text style={styles.createTitle}>Create New Pocket 🚀</Text>
+              <View style={[styles.createBox, { maxHeight: '85%', padding: 0 }]}>
+                <ScrollView contentContainerStyle={{ padding: 25 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+                  <Text style={styles.createTitle}>Create New Pocket 🚀</Text>
               
               <TextInput style={styles.inputField} placeholder="e.g. Graduation Trip" placeholderTextColor="#6b7280" value={squadName} onChangeText={setSquadName} underlineColorAndroid="transparent" />
               <TextInput style={styles.inputField} placeholder="Target Goal Amount (RM)" placeholderTextColor="#6b7280" value={squadGoalAmount} onChangeText={setSquadGoalAmount} keyboardType="numeric" underlineColorAndroid="transparent" />
@@ -227,8 +228,9 @@ export function SamaSaveModals({ state, actions }: any) {
                 <Text style={styles.createSubmitText}>Start Pocket</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => setShowCreateModal(false)}><Text style={styles.cancelLinkText}>Cancel</Text></TouchableOpacity>
+                </ScrollView>
+              </View>
             </View>
-          </View>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
       </Modal>
