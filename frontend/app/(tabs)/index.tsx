@@ -86,13 +86,6 @@ export default function App() {
 
   // Activity feed data
   const [activities, setActivities] = useState<any>({
-    KLTripFund: [
-      { id: 1, user: 'Michelle', msg: 'paid RM5.50 Sin Tax for 2AM McDonald\'s. 🍔', cat: 'KL Trip Fund', icon: 'food-hot-dog', color: '#f43f5e' },
-      { id: 2, user: 'Xinying', msg: 'avoided a Shopee impulse checkout! +10 Pts. 🛡️', cat: 'KL Trip Fund', icon: 'shield-star-outline', color: '#22d3ee' },
-    ],
-    OsakaTrip: [
-      { id: 1, user: 'Zini', msg: 'saved RM150 for the Osaka Universal Studio! 🎢', cat: 'Osaka Trip', icon: 'airplane-takeoff', color: '#22d3ee' },
-    ],
     All: [
       { id: 1, user: 'Michelle', msg: 'paid RM5.50 Sin Tax for 2AM McDonald\'s. 🍔', cat: 'KL Trip Fund', icon: 'food-hot-dog', color: '#f43f5e' },
       { id: 2, user: 'Zini', msg: 'saved RM150 for the Osaka Universal Studio! 🎢', cat: 'Osaka Trip', icon: 'airplane-takeoff', color: '#22d3ee' },
@@ -227,7 +220,6 @@ export default function App() {
 
     setActivities((prev: any) => ({
       ...prev,
-      [activeSquad]: [newActivity, ...(prev[activeSquad] || [])],
       All: [newActivity, ...(prev.All || [])]
     }));
 
@@ -342,21 +334,7 @@ export default function App() {
       setTotalBalance((prev: number) => prev - (itemCost + penalty));
       setPartnerPenaltyBalance((prev: number) => prev + penalty); 
 
-      const penaltyActivity = {
-        id: Date.now(),
-        user: 'Zini',
-        msg: `大家快看！Zini 剛剛衝動消費了！😱`,
-        cat: 'Global Feed',
-        icon: 'alert-octagon',
-        color: '#f59e0b' 
-      };
-
-      setActivities((prev: any) => ({
-        ...prev,
-        All: [penaltyActivity, ...(prev.All || [])]
-      }));
-
-      Alert.alert("Action Taken", `Transaction approved. RM ${(itemCost + penalty).toFixed(2)} deducted. RM ${penalty.toFixed(2)} sent to ${boundPartner} and broadcasted to main feed!`, [{ text: "OK", onPress: () => setShowWarning(false) }]);
+      Alert.alert("Action Taken", `Transaction approved. RM ${(itemCost + penalty).toFixed(2)} deducted. RM ${penalty.toFixed(2)} sent to ${boundPartner} as a penalty!`, [{ text: "OK", onPress: () => setShowWarning(false) }]);
     
     } else {
       const penalty = itemCost * 0.08; // 8% penalty = 4.00
@@ -366,7 +344,7 @@ export default function App() {
       const penaltyActivity = {
         id: Date.now(),
         user: 'Zini',
-        msg: `大家快看！Zini 半夜1200在mcd衝動消費 🔥`,
+        msg: `Look everyone! Zini just made an impulse purchase! 🔥`,
         cat: 'Shame Board',
         icon: 'fire',
         color: '#f43f5e' 
@@ -425,7 +403,6 @@ export default function App() {
 
       setActivities((prev: any) => ({
         ...prev,
-        [linkedGXPocket]: [newActivity, ...(prev[linkedGXPocket] || [])],
         All: [newActivity, ...(prev.All || [])]
       }));
 
@@ -785,16 +762,15 @@ export default function App() {
             </View>
             
             <View style={styles.feedBox}>
-              {(activities[activeSquad] || []).slice(0, 3).map((item: any) => (
+              {(activities.All || []).slice(0, 3).map((item: any) => (
                 <View key={item.id} style={styles.feedItem}>
                   <MaterialCommunityIcons name={item.icon} size={20} color={item.color} />
                   <View style={{ marginLeft: 10, flex: 1 }}>
                     <Text style={styles.feedText}><Text style={styles.feedName}>{item.user}</Text> {item.msg}</Text>
-                    <Text style={styles.feedCategoryLabel}>in {item.cat} • Just now</Text>
                   </View>
                 </View>
               ))}
-              {(!activities[activeSquad] || activities[activeSquad].length === 0) && (
+              {(!activities.All || activities.All.length === 0) && (
                  <View style={{ padding: 15, alignItems: 'center' }}>
                     <MaterialCommunityIcons name="sleep" size={30} color="#6b7280" />
                     <Text style={{ color: '#9ca3af', fontSize: 13, marginTop: 8 }}>Quiet here... No activity yet.</Text>

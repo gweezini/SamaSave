@@ -316,16 +316,15 @@ export function SamaSaveModals({ state, actions }: any) {
               <TouchableOpacity onPress={() => setShowHistoryModal(false)}><Ionicons name="close-circle" size={28} color="#9ca3af" /></TouchableOpacity>
             </View>
             <ScrollView>
-              {(activities[activeSquad] || activities.All).map((item: any) => (
+              {(activities.All || []).map((item: any) => (
                 <View key={item.id} style={styles.historyItem}>
                   <MaterialCommunityIcons name={item.icon} size={24} color={item.color} />
                   <View style={{ marginLeft: 15, flex: 1 }}>
                     <Text style={styles.feedText}><Text style={styles.feedName}>{item.user}</Text> {item.msg}</Text>
-                    <Text style={styles.feedCategoryLabel}>in {item.cat} • Just now</Text>
                   </View>
                 </View>
               ))}
-              {(!activities[activeSquad] || activities[activeSquad].length === 0) && (
+              {(!activities.All || activities.All.length === 0) && (
                  <View style={{ padding: 15, alignItems: 'center' }}>
                     <MaterialCommunityIcons name="sleep" size={30} color="#6b7280" />
                     <Text style={{ color: '#9ca3af', fontSize: 13, marginTop: 8 }}>Quiet here... No activity yet.</Text>
