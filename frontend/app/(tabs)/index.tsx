@@ -691,7 +691,7 @@ export default function App() {
                       return (
                         <TouchableOpacity key={squad.id} style={[styles.categoryCard, { width: '100%', height: 'auto', flexDirection: 'row', alignItems: 'center', opacity: squad.isCompleted ? 0.6 : 1 }]} onPress={() => setActiveSquad(squad.id)}>
                           <View style={{flex: 1}}>
-                            <Text style={[styles.categoryCardTitle, { fontSize: 16 }]}>{squad.name} {squad.isCompleted ? '(Done)' : ''}</Text>
+                            <Text style={[styles.categoryCardTitle, { fontSize: 16 }]}>{squad.name}</Text>
                             <Text style={{color: '#9ca3af', fontSize: 12, marginTop: 4}}>My Progress: RM {ziniData.saved} / RM {goal.target}</Text>
                             <View style={[styles.progressBarBg, { height: 4, marginTop: 8, marginBottom: 0, width: '80%' }]}>
                               <View style={[styles.progressBarFill, {width: progressPercent as any}]} />
