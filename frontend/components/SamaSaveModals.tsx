@@ -8,13 +8,13 @@ export function SamaSaveModals({ state, actions }: any) {
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const {
     showWarning, showCreateModal, showInviteModal, showJoinModal, showDepositModal, showHistoryModal, showMembersModal, showEditGoalModal, showBindPartnerModal, showCompletionModal, showGXBankModal,
-    aiMode, squadName, squadGoalAmount, squadUsableStartDate, squadUsableEndDate, inviteMichelle, inviteXinying, joinCodeInput, depositAmount, depositFreq, editGoalAmount, gxPaymentAmount, linkedGXPocket, activeSquad, squads, squadGoals, membersData, activities, completedAmount
+    aiMode, squadName, squadGoalAmount, squadUsableStartDate, squadUsableEndDate, squadTag, customTag, showCompletionOptions, inviteMichelle, inviteXinying, joinCodeInput, depositAmount, depositFreq, editGoalAmount, gxPaymentAmount, linkedGXPocket, activeSquad, squads, squadGoals, membersData, activities, completedAmount
   } = state;
 
   const {
     setShowWarning, setShowCreateModal, setShowInviteModal, setShowJoinModal, setShowDepositModal, setShowHistoryModal, setShowMembersModal, setShowEditGoalModal, setShowBindPartnerModal, setShowCompletionModal, setShowGXBankModal, setBoundPartner, setPartnerPenaltyBalance,
-    setSquadName, setSquadGoalAmount, setSquadUsableStartDate, setSquadUsableEndDate, setInviteMichelle, setInviteXinying, setJoinCodeInput, setDepositAmount, setDepositFreq, setEditGoalAmount, setGxPaymentAmount, setLinkedGXPocket,
-    handleCreateSquad, handleJoinSquad, handleDeposit, handleEditGoal, handleProceedTransaction, handleGXBankPayment, copyToClipboard, getJoinCode,
+    setSquadName, setSquadGoalAmount, setSquadUsableStartDate, setSquadUsableEndDate, setSquadTag, setCustomTag, setShowCompletionOptions, setInviteMichelle, setInviteXinying, setJoinCodeInput, setDepositAmount, setDepositFreq, setEditGoalAmount, setGxPaymentAmount, setLinkedGXPocket,
+    handleCreateSquad, handleJoinSquad, handleDeposit, handleEditGoal, handleProceedTransaction, handleGXBankPayment, handleCompleteToMain, handleCompleteToVault, handleCompleteToPocket, copyToClipboard, getJoinCode,
     getWarningTitle, getWarningBodyText, getProceedButtonText, getCancelButtonText
   } = actions;
 
@@ -126,6 +126,39 @@ export function SamaSaveModals({ state, actions }: any) {
                   }}
                 />
               )}
+
+              {/* Category Selector */}
+              <View style={{ marginTop: 10, marginBottom: 5 }}>
+                <Text style={[styles.inviteTitle, { marginBottom: 5 }]}>Category:</Text>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                  {['Trip', 'Shopping', 'Concert', 'Tech', 'Other'].map((tag) => (
+                    <TouchableOpacity 
+                      key={tag}
+                      onPress={() => setSquadTag(tag)}
+                      style={{
+                        paddingHorizontal: 12,
+                        paddingVertical: 6,
+                        borderRadius: 15,
+                        backgroundColor: squadTag === tag ? '#22d3ee' : '#2d1b4e',
+                        marginRight: 8,
+                        marginBottom: 8
+                      }}
+                    >
+                      <Text style={{ color: squadTag === tag ? '#11081f' : '#9ca3af', fontWeight: 'bold', fontSize: 12 }}>{tag}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+                {squadTag === 'Other' && (
+                  <TextInput 
+                    style={[styles.inputField, { marginTop: 5, paddingVertical: 8, fontSize: 13 }]} 
+                    placeholder="Type custom category..." 
+                    placeholderTextColor="#6b7280" 
+                    value={customTag} 
+                    onChangeText={setCustomTag} 
+                    underlineColorAndroid="transparent" 
+                  />
+                )}
+              </View>
 
               <View style={styles.inviteSection}>
                 <Text style={styles.inviteTitle}>Initial Members:</Text>
@@ -307,15 +340,49 @@ export function SamaSaveModals({ state, actions }: any) {
       {/* Completion Modal */}
       <Modal visible={showCompletionModal} animationType="fade" transparent={true}>
         <View style={styles.modalOverlay}>
-          <View style={[styles.createBox, { borderColor: '#10b981', borderWidth: 2, alignItems: 'center' }]}>
-            <MaterialCommunityIcons name="party-popper" size={60} color="#10b981" />
-            <Text style={[styles.createTitle, { marginTop: 15, textAlign: 'center' }]}>Awesome trip!</Text>
-            <Text style={[styles.inviteTitle, { textAlign: 'center', lineHeight: 22, fontSize: 16 }]}>
-              Zini you survived with RM {completedAmount} left, the money will be credited to your main account!
-            </Text>
-            <TouchableOpacity style={[styles.createSubmitButton, { backgroundColor: '#10b981', marginTop: 10 }]} onPress={() => setShowCompletionModal(false)}>
-              <Text style={styles.createSubmitText}>Awesome!</Text>
-            </TouchableOpacity>
+          <View style={[styles.createBox, { borderColor: '#10b981', borderWidth: 2 }]}>
+            <View style={{ alignItems: 'center' }}>
+              <MaterialCommunityIcons name="party-popper" size={60} color="#10b981" />
+              <Text style={[styles.createTitle, { marginTop: 15, textAlign: 'center' }]}>You did it!</Text>
+              <Text style={[styles.inviteTitle, { textAlign: 'center', lineHeight: 22, fontSize: 16, marginBottom: 20 }]}>
+                Zini, you survived with RM {completedAmount} left! What would you like to do with it?
+              </Text>
+            </View>
+
+            {!showCompletionOptions ? (
+              <View>
+                <TouchableOpacity style={[styles.createSubmitButton, { backgroundColor: '#10b981', marginBottom: 10 }]} onPress={handleCompleteToMain}>
+                  <Text style={styles.createSubmitText}>🏦 Transfer to Main Account</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.createSubmitButton, { backgroundColor: '#22d3ee', marginBottom: 10 }]} onPress={() => setShowCompletionOptions(true)}>
+                  <Text style={styles.createSubmitText}>📁 Transfer to another Pocket</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.createSubmitButton, { backgroundColor: '#f59e0b' }]} onPress={handleCompleteToVault}>
+                  <Text style={styles.createSubmitText}>🔒 Lock in GX Emergency Vault</Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <View>
+                <Text style={[styles.inviteTitle, { marginBottom: 10, textAlign: 'center' }]}>Select a Pocket to transfer RM {completedAmount}:</Text>
+                <ScrollView style={{ maxHeight: 150, marginBottom: 15 }}>
+                  {squads.filter((s: any) => !s.isCompleted && s.id !== activeSquad).map((squad: any) => (
+                    <TouchableOpacity 
+                      key={squad.id} 
+                      style={{ padding: 15, backgroundColor: '#2d1b4e', borderRadius: 10, marginBottom: 8 }}
+                      onPress={() => handleCompleteToPocket(squad.id)}
+                    >
+                      <Text style={{ color: 'white', fontWeight: 'bold' }}>{squad.name}</Text>
+                    </TouchableOpacity>
+                  ))}
+                  {squads.filter((s: any) => !s.isCompleted && s.id !== activeSquad).length === 0 && (
+                    <Text style={{ color: '#9ca3af', textAlign: 'center', padding: 10 }}>No other active pockets available.</Text>
+                  )}
+                </ScrollView>
+                <TouchableOpacity onPress={() => setShowCompletionOptions(false)}>
+                  <Text style={[styles.cancelLinkText, { textAlign: 'center' }]}>Back to Options</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         </View>
       </Modal>

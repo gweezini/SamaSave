@@ -22,6 +22,7 @@ export default function App() {
   // Tab and squad selection states
   const [activeTab, setActiveTab] = useState('Home');
   const [activeSquad, setActiveSquad] = useState('All');
+  const [filterTag, setFilterTag] = useState('All');
   
   // ==========================================
   // CORE FINANCIAL STATES
@@ -33,9 +34,9 @@ export default function App() {
   
   // Initial squad list
   const [squads, setSquads] = useState([
-    { id: 'KLTripFund', name: 'KL Trip Fund 🌴', isCompleted: false },
-    { id: 'NewTVFund', name: 'New TV Fund 📺', isCompleted: false },
-    { id: 'OsakaTrip', name: 'Osaka Trip 🍣', isCompleted: true }
+    { id: 'KLTripFund', name: 'KL Trip Fund 🌴', isCompleted: false, tag: 'Trip' },
+    { id: 'NewTVFund', name: 'New TV Fund 📺', isCompleted: false, tag: 'Shopping' },
+    { id: 'OsakaTrip', name: 'Osaka Trip 🍣', isCompleted: true, tag: 'Trip' }
   ]);
   
   // Form states
@@ -43,6 +44,9 @@ export default function App() {
   const [squadGoalAmount, setSquadGoalAmount] = useState(''); 
   const [squadUsableStartDate, setSquadUsableStartDate] = useState('');
   const [squadUsableEndDate, setSquadUsableEndDate] = useState('');
+  const [squadTag, setSquadTag] = useState('Trip');
+  const [customTag, setCustomTag] = useState('');
+  const [showCompletionOptions, setShowCompletionOptions] = useState(false);
   const [inviteMichelle, setInviteMichelle] = useState(false);
   const [inviteXinying, setInviteXinying] = useState(false); 
   const [editGoalAmount, setEditGoalAmount] = useState('');
@@ -111,13 +115,15 @@ export default function App() {
     const newSquadName = `${squadName}`;
     const targetAmount = parseFloat(squadGoalAmount) || 1000; 
     
+    const finalTag = squadTag === 'Other' && customTag.trim() ? customTag.trim() : squadTag;
+
     const newMembers = [{ id: 'z', name: 'Zini', initial: 'Z', color: '#7c3aed', saved: targetAmount, weekly: 0, target: targetAmount, status: 'Leader 👑' }]; 
     if (inviteMichelle) newMembers.push({ id: 'm', name: 'Michelle', initial: 'M', color: '#22d3ee', saved: targetAmount * 0.8, weekly: 0, target: targetAmount, status: 'Just joined 🐣' });
     if (inviteXinying) newMembers.push({ id: 'x', name: 'Xinying', initial: 'X', color: '#f43f5e', saved: targetAmount * 0.9, weekly: 0, target: targetAmount, status: 'Catching up 🏃' });
 
     setMembersData((prev: any) => ({ ...prev, [newSquadId]: newMembers }));
     setSquadGoals((prev: any) => ({ ...prev, [newSquadId]: { title: squadName, target: targetAmount, startDate: squadUsableStartDate, endDate: squadUsableEndDate } }));
-    setSquads([...squads, { id: newSquadId, name: newSquadName, isCompleted: false }]);
+    setSquads([...squads, { id: newSquadId, name: newSquadName, isCompleted: false, tag: finalTag }]);
     setActiveSquad(newSquadId);
     
     setShowCreateModal(false);
@@ -125,6 +131,8 @@ export default function App() {
     setSquadGoalAmount('');
     setSquadUsableStartDate('');
     setSquadUsableEndDate('');
+    setSquadTag('Trip');
+    setCustomTag('');
     setInviteMichelle(false);
     setInviteXinying(false);
   };
@@ -236,11 +244,37 @@ export default function App() {
     
     if (currentSaved > 0) {
       setCompletedAmount(currentSaved);
+      setShowCompletionOptions(false);
       setShowCompletionModal(true);
-      setTotalBalance((prev: number) => prev + currentSaved);
     } else {
       Alert.alert("Pocket Completed", "Pocket closed. No remaining balance to transfer.");
     }
+  };
+
+  const handleCompleteToMain = () => {
+    setTotalBalance((prev: number) => prev + completedAmount);
+    setShowCompletionModal(false);
+    Alert.alert("Success", `RM ${completedAmount} transferred to Main Account.`);
+  };
+
+  const handleCompleteToVault = () => {
+    setShowCompletionModal(false);
+    Alert.alert("Locked In! 🔒", `RM ${completedAmount} has been secured in the GX Emergency Vault at a high interest rate.`);
+  };
+
+  const handleCompleteToPocket = (targetPocketId: string) => {
+    setMembersData((prev: any) => {
+      const targetMembers = prev[targetPocketId] || [];
+      const updatedMembers = targetMembers.map((m: any) => {
+        if (m.id === 'z') {
+          return { ...m, saved: m.saved + completedAmount, weekly: (m.weekly || 0) + completedAmount };
+        }
+        return m;
+      });
+      return { ...prev, [targetPocketId]: updatedMembers };
+    });
+    setShowCompletionModal(false);
+    Alert.alert("Transferred! 📁", `RM ${completedAmount} moved to ${squadGoals[targetPocketId]?.title}.`);
   };
 
   // Copies the squad join code to the device clipboard.
@@ -307,7 +341,7 @@ export default function App() {
       const penaltyActivity = {
         id: Date.now(),
         user: 'Zini',
-        msg: `couldn't resist temptation! Paid RM ${penalty.toFixed(2)} penalty to ${boundPartner} 🥊`,
+        msg: `大家快看！Zini 剛剛衝動消費了！😱`,
         cat: 'Global Feed',
         icon: 'alert-octagon',
         color: '#f59e0b' 
@@ -328,7 +362,7 @@ export default function App() {
       const penaltyActivity = {
         id: Date.now(),
         user: 'Zini',
-        msg: `succumbed to a high-risk impulse buy! Paid RM ${penalty.toFixed(2)} penalty to ${boundPartner} 🔥`,
+        msg: `大家快看！Zini 半夜1200在mcd衝動消費 🔥`,
         cat: 'Shame Board',
         icon: 'fire',
         color: '#f43f5e' 
@@ -452,9 +486,9 @@ export default function App() {
           const isFirstPlace = index === 0;
           const medal = medals[index] || "🏅"; 
           
-          const bonusTag = isFirstPlace ? "Weekly Reward 0.5% Interest 💸" : null;
+          const bonusTag = isFirstPlace ? "+0.5% Interest 💸" : null;
           
-          const scoreDisplay = `Weekly Saved: RM ${member.weekly || 0}`;
+          const scoreDisplay = `RM ${member.weekly || 0}`;
 
           return (
             <View key={member.id}>
@@ -470,14 +504,14 @@ export default function App() {
   // Collect all states for the Modals component
   const modalStates = {
     showWarning, showCreateModal, showInviteModal, showJoinModal, showDepositModal, showHistoryModal, showMembersModal, showEditGoalModal, showBindPartnerModal, showCompletionModal, showGXBankModal,
-    aiMode, squadName, squadGoalAmount, squadUsableStartDate, squadUsableEndDate, inviteMichelle, inviteXinying, joinCodeInput, depositAmount, depositFreq, editGoalAmount, gxPaymentAmount, linkedGXPocket, activeSquad, squads, squadGoals, membersData, activities, completedAmount
+    aiMode, squadName, squadGoalAmount, squadUsableStartDate, squadUsableEndDate, squadTag, customTag, showCompletionOptions, inviteMichelle, inviteXinying, joinCodeInput, depositAmount, depositFreq, editGoalAmount, gxPaymentAmount, linkedGXPocket, activeSquad, squads, squadGoals, membersData, activities, completedAmount
   };
 
   // Collect all actions for the Modals component
   const modalActions = {
     setShowWarning, setShowCreateModal, setShowInviteModal, setShowJoinModal, setShowDepositModal, setShowHistoryModal, setShowMembersModal, setShowEditGoalModal, setShowBindPartnerModal, setShowCompletionModal, setShowGXBankModal, setBoundPartner, setPartnerPenaltyBalance,
-    setSquadName, setSquadGoalAmount, setSquadUsableStartDate, setSquadUsableEndDate, setInviteMichelle, setInviteXinying, setJoinCodeInput, setDepositAmount, setDepositFreq, setEditGoalAmount, setGxPaymentAmount, setLinkedGXPocket,
-    handleCreateSquad, handleJoinSquad, handleDeposit, handleEditGoal, handleProceedTransaction, handleGXBankPayment, copyToClipboard, getJoinCode,
+    setSquadName, setSquadGoalAmount, setSquadUsableStartDate, setSquadUsableEndDate, setSquadTag, setCustomTag, setShowCompletionOptions, setInviteMichelle, setInviteXinying, setJoinCodeInput, setDepositAmount, setDepositFreq, setEditGoalAmount, setGxPaymentAmount, setLinkedGXPocket,
+    handleCreateSquad, handleJoinSquad, handleDeposit, handleEditGoal, handleProceedTransaction, handleGXBankPayment, handleCompleteToMain, handleCompleteToVault, handleCompleteToPocket, copyToClipboard, getJoinCode,
     getWarningTitle, getWarningBodyText, getProceedButtonText, getCancelButtonText
   };
 
@@ -527,6 +561,26 @@ export default function App() {
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Your everyday account</Text>
               <MaterialCommunityIcons name="credit-card-outline" size={24} color="#6b7280" />
+            </View>
+
+            <View style={{ flexDirection: 'row', marginBottom: 15 }}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {['All', 'Trip', 'Shopping', 'Concert', 'Tech', 'Other'].map(tag => (
+                  <TouchableOpacity 
+                    key={tag}
+                    onPress={() => setFilterTag(tag)}
+                    style={{
+                      paddingHorizontal: 16,
+                      paddingVertical: 6,
+                      borderRadius: 20,
+                      backgroundColor: filterTag === tag ? '#22d3ee' : '#2d1b4e',
+                      marginRight: 10
+                    }}
+                  >
+                    <Text style={{ color: filterTag === tag ? '#11081f' : '#9ca3af', fontWeight: 'bold', fontSize: 13 }}>{tag}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
             </View>
 
             <View style={styles.cardsContainer}>
@@ -600,7 +654,28 @@ export default function App() {
                   <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15}}>
                     <Text style={[styles.gridHeader, {marginBottom: 0}]}>Your Pockets 📁</Text>
                   </View>
-                  {squads.map((squad) => {
+                  
+                  <View style={{ flexDirection: 'row', marginBottom: 15 }}>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                      {['All', 'Trip', 'Shopping', 'Concert', 'Tech', 'Other'].map(tag => (
+                        <TouchableOpacity 
+                          key={tag}
+                          onPress={() => setFilterTag(tag)}
+                          style={{
+                            paddingHorizontal: 16,
+                            paddingVertical: 6,
+                            borderRadius: 20,
+                            backgroundColor: filterTag === tag ? '#22d3ee' : '#2d1b4e',
+                            marginRight: 10
+                          }}
+                        >
+                          <Text style={{ color: filterTag === tag ? '#11081f' : '#9ca3af', fontWeight: 'bold', fontSize: 13 }}>{tag}</Text>
+                        </TouchableOpacity>
+                      ))}
+                    </ScrollView>
+                  </View>
+
+                  {squads.filter((s: any) => filterTag === 'All' || s.tag === filterTag).map((squad) => {
                     const goal = squadGoals[squad.id] || { target: 1000 };
                     const ziniData = (membersData[squad.id] || []).find((m: any) => m.id === 'z') || { saved: 0 };
                     const progressPercent = Math.min((ziniData.saved / goal.target) * 100, 100) + '%';
@@ -758,16 +833,16 @@ const renderRankRow = (medal: any, name: any, score: any, status: any, bonusText
   <View style={styles.rankRow}>
     <Text style={styles.rankMedal}>{medal}</Text>
     <View style={styles.rankInfo}>
-      <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+      <View style={{flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between'}}>
+        <View style={{flexDirection: 'row', alignItems: 'center', flex: 1, flexWrap: 'wrap', marginRight: 10}}>
           <Text style={styles.rankName}>{name}</Text>
           {bonusText && (
-            <View style={styles.bonusBadge}>
+            <View style={[styles.bonusBadge, { marginTop: 2, marginBottom: 2 }]}>
               <Text style={styles.bonusText}>{bonusText}</Text>
             </View>
           )}
         </View>
-        <Text style={styles.rankStatusSafe}>{score}</Text>
+        <Text style={[styles.rankStatusSafe, { marginTop: 2 }]}>{score}</Text>
       </View>
       <View style={[styles.progressBarBg, { height: 4, marginTop: 6, marginBottom: 4 }]}>
         <View style={[styles.progressBarFill, {width: progressPercent as any, backgroundColor: status.includes('Safe') || status.includes('Ready') ? '#10b981' : (status.includes('Warning') ? '#f59e0b' : '#22d3ee')}]} />
