@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Modal, Alert, TextInput, KeyboardAvoidingView, Platform, Clipboard } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Modal, Alert, TextInput, KeyboardAvoidingView, Platform, Clipboard, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -81,8 +81,9 @@ export function SamaSaveModals({ state, actions }: any) {
       {/* Squad Creation Modal */}
       <Modal visible={showCreateModal} animationType="slide" transparent={true}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-          <View style={styles.modalOverlay}>
-            <View style={styles.createBox}>
+          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <View style={styles.modalOverlay}>
+              <View style={styles.createBox}>
               <Text style={styles.createTitle}>Create New Pocket 🚀</Text>
               
               <TextInput style={styles.inputField} placeholder="e.g. Graduation Trip" placeholderTextColor="#6b7280" value={squadName} onChangeText={setSquadName} underlineColorAndroid="transparent" />
@@ -93,18 +94,42 @@ export function SamaSaveModals({ state, actions }: any) {
                   {squadUsableStartDate ? `Usable From: ${squadUsableStartDate}` : "Usable From (Select Date)"}
                 </Text>
               </TouchableOpacity>
-              {showStartDatePicker && (
-                <DateTimePicker
-                  value={squadUsableStartDate ? new Date(squadUsableStartDate) : new Date()}
-                  mode="date"
-                  display="default"
-                  onChange={(event: any, selectedDate?: Date) => {
-                    setShowStartDatePicker(Platform.OS === 'ios');
-                    if (selectedDate) {
-                      setSquadUsableStartDate(selectedDate.toISOString().split('T')[0]);
-                    }
-                  }}
-                />
+              {Platform.OS === 'ios' ? (
+                <Modal visible={showStartDatePicker} transparent={true} animationType="slide">
+                  <View style={{flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.6)'}}>
+                    <View style={{backgroundColor: 'white', padding: 20, paddingBottom: 40, borderTopLeftRadius: 20, borderTopRightRadius: 20}}>
+                      <View style={{flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 10}}>
+                        <TouchableOpacity onPress={() => setShowStartDatePicker(false)}>
+                          <Text style={{color: '#7c3aed', fontWeight: 'bold', fontSize: 18}}>Done</Text>
+                        </TouchableOpacity>
+                      </View>
+                      <DateTimePicker
+                        value={squadUsableStartDate ? new Date(squadUsableStartDate) : new Date()}
+                        mode="date"
+                        display="spinner"
+                        onChange={(event: any, selectedDate?: Date) => {
+                          if (selectedDate) {
+                            setSquadUsableStartDate(selectedDate.toISOString().split('T')[0]);
+                          }
+                        }}
+                      />
+                    </View>
+                  </View>
+                </Modal>
+              ) : (
+                showStartDatePicker && (
+                  <DateTimePicker
+                    value={squadUsableStartDate ? new Date(squadUsableStartDate) : new Date()}
+                    mode="date"
+                    display="default"
+                    onChange={(event: any, selectedDate?: Date) => {
+                      setShowStartDatePicker(false);
+                      if (selectedDate) {
+                        setSquadUsableStartDate(selectedDate.toISOString().split('T')[0]);
+                      }
+                    }}
+                  />
+                )
               )}
 
               <TouchableOpacity onPress={() => setShowEndDatePicker(true)} style={[styles.inputField, {justifyContent: 'center'}]}>
@@ -112,19 +137,44 @@ export function SamaSaveModals({ state, actions }: any) {
                   {squadUsableEndDate ? `Usable Until: ${squadUsableEndDate}` : "Usable Until (Select Date)"}
                 </Text>
               </TouchableOpacity>
-              {showEndDatePicker && (
-                <DateTimePicker
-                  value={squadUsableEndDate ? new Date(squadUsableEndDate) : new Date()}
-                  mode="date"
-                  display="default"
-                  minimumDate={squadUsableStartDate ? new Date(squadUsableStartDate) : undefined}
-                  onChange={(event: any, selectedDate?: Date) => {
-                    setShowEndDatePicker(Platform.OS === 'ios');
-                    if (selectedDate) {
-                      setSquadUsableEndDate(selectedDate.toISOString().split('T')[0]);
-                    }
-                  }}
-                />
+              {Platform.OS === 'ios' ? (
+                <Modal visible={showEndDatePicker} transparent={true} animationType="slide">
+                  <View style={{flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.6)'}}>
+                    <View style={{backgroundColor: 'white', padding: 20, paddingBottom: 40, borderTopLeftRadius: 20, borderTopRightRadius: 20}}>
+                      <View style={{flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 10}}>
+                        <TouchableOpacity onPress={() => setShowEndDatePicker(false)}>
+                          <Text style={{color: '#7c3aed', fontWeight: 'bold', fontSize: 18}}>Done</Text>
+                        </TouchableOpacity>
+                      </View>
+                      <DateTimePicker
+                        value={squadUsableEndDate ? new Date(squadUsableEndDate) : new Date()}
+                        mode="date"
+                        display="spinner"
+                        minimumDate={squadUsableStartDate ? new Date(squadUsableStartDate) : undefined}
+                        onChange={(event: any, selectedDate?: Date) => {
+                          if (selectedDate) {
+                            setSquadUsableEndDate(selectedDate.toISOString().split('T')[0]);
+                          }
+                        }}
+                      />
+                    </View>
+                  </View>
+                </Modal>
+              ) : (
+                showEndDatePicker && (
+                  <DateTimePicker
+                    value={squadUsableEndDate ? new Date(squadUsableEndDate) : new Date()}
+                    mode="date"
+                    display="default"
+                    minimumDate={squadUsableStartDate ? new Date(squadUsableStartDate) : undefined}
+                    onChange={(event: any, selectedDate?: Date) => {
+                      setShowEndDatePicker(false);
+                      if (selectedDate) {
+                        setSquadUsableEndDate(selectedDate.toISOString().split('T')[0]);
+                      }
+                    }}
+                  />
+                )
               )}
 
               {/* Category Selector */}
@@ -170,14 +220,16 @@ export function SamaSaveModals({ state, actions }: any) {
               <TouchableOpacity onPress={() => setShowCreateModal(false)}><Text style={styles.cancelLinkText}>Cancel</Text></TouchableOpacity>
             </View>
           </View>
+          </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
       </Modal>
 
       {/* Join Squad via Code Modal */}
       <Modal visible={showJoinModal} animationType="slide" transparent={true}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-          <View style={styles.modalOverlay}>
-            <View style={styles.createBox}>
+          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <View style={styles.modalOverlay}>
+              <View style={styles.createBox}>
               <Text style={styles.createTitle}>Join a Pocket 🤝</Text>
               <Text style={styles.inviteTitle}>Enter the secret code from your friend to join their saving pocket!</Text>
               
@@ -196,14 +248,16 @@ export function SamaSaveModals({ state, actions }: any) {
               <TouchableOpacity onPress={() => setShowJoinModal(false)}><Text style={styles.cancelLinkText}>Cancel</Text></TouchableOpacity>
             </View>
           </View>
+          </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
       </Modal>
 
       {/* Deposit Modal */}
       <Modal visible={showDepositModal} animationType="slide" transparent={true}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-          <View style={styles.modalOverlay}>
-            <View style={styles.createBox}>
+          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <View style={styles.modalOverlay}>
+              <View style={styles.createBox}>
               <Text style={styles.createTitle}>Deposit to Pocket 💰</Text>
               <Text style={styles.inviteTitle}>How much would you like to save into {squadGoals[activeSquad]?.title}?</Text>
               
@@ -246,14 +300,16 @@ export function SamaSaveModals({ state, actions }: any) {
               <TouchableOpacity onPress={() => setShowDepositModal(false)}><Text style={styles.cancelLinkText}>Cancel</Text></TouchableOpacity>
             </View>
           </View>
+          </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
       </Modal>
 
       {/* Edit Target Goal Modal */}
       <Modal visible={showEditGoalModal} animationType="fade" transparent={true}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-          <View style={styles.modalOverlay}>
-            <View style={styles.createBox}>
+          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <View style={styles.modalOverlay}>
+              <View style={styles.createBox}>
               <Text style={styles.createTitle}>Update Goal 🎯</Text>
               <Text style={styles.inviteTitle}>New target amount for {squadGoals[activeSquad]?.title}:</Text>
               <TextInput style={styles.inputField} placeholder="Enter new target (RM)" placeholderTextColor="#6b7280" value={editGoalAmount} onChangeText={setEditGoalAmount} keyboardType="numeric" />
@@ -261,6 +317,7 @@ export function SamaSaveModals({ state, actions }: any) {
               <TouchableOpacity onPress={() => setShowEditGoalModal(false)}><Text style={styles.cancelLinkText}>Cancel</Text></TouchableOpacity>
             </View>
           </View>
+          </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
       </Modal>
 
@@ -389,8 +446,9 @@ export function SamaSaveModals({ state, actions }: any) {
       {/* GXBank Payment Modal */}
       <Modal visible={showGXBankModal} animationType="slide" transparent={true}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-          <View style={styles.modalOverlay}>
-            <View style={styles.createBox}>
+          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <View style={styles.modalOverlay}>
+              <View style={styles.createBox}>
               <Text style={styles.createTitle}>Simulate GX Card Swipe 💳</Text>
               
               <TextInput 
@@ -422,6 +480,7 @@ export function SamaSaveModals({ state, actions }: any) {
               </TouchableOpacity>
             </View>
           </View>
+          </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
       </Modal>
       {/* Create Pocket Options Modal */}
