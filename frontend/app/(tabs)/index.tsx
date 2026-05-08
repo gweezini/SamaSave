@@ -17,7 +17,10 @@ export default function App() {
   const [showBindPartnerModal, setShowBindPartnerModal] = useState(false);
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [showGXBankModal, setShowGXBankModal] = useState(false);
+  const [showCreatePocketOptionsModal, setShowCreatePocketOptionsModal] = useState(false);
+  const [showBonusPocketModal, setShowBonusPocketModal] = useState(false);
   const [completedAmount, setCompletedAmount] = useState(0);
+  const [bonusPocketBalance, setBonusPocketBalance] = useState(0);
   
   // Tab and squad selection states
   const [activeTab, setActiveTab] = useState('Home');
@@ -258,8 +261,9 @@ export default function App() {
   };
 
   const handleCompleteToVault = () => {
+    setBonusPocketBalance(prev => prev + completedAmount);
     setShowCompletionModal(false);
-    Alert.alert("Locked In! 🔒", `RM ${completedAmount} has been secured in the GX Bonus Pocket at a high interest rate.`);
+    Alert.alert("Transferred! 📁", `RM ${completedAmount} has been transferred to the GX Bonus Pocket.`);
   };
 
   const handleCompleteToPocket = (targetPocketId: string) => {
@@ -503,13 +507,13 @@ export default function App() {
 
   // Collect all states for the Modals component
   const modalStates = {
-    showWarning, showCreateModal, showInviteModal, showJoinModal, showDepositModal, showHistoryModal, showMembersModal, showEditGoalModal, showBindPartnerModal, showCompletionModal, showGXBankModal,
-    aiMode, squadName, squadGoalAmount, squadUsableStartDate, squadUsableEndDate, squadTag, customTag, showCompletionOptions, inviteMichelle, inviteXinying, joinCodeInput, depositAmount, depositFreq, editGoalAmount, gxPaymentAmount, linkedGXPocket, activeSquad, squads, squadGoals, membersData, activities, completedAmount
+    showWarning, showCreateModal, showInviteModal, showJoinModal, showDepositModal, showHistoryModal, showMembersModal, showEditGoalModal, showBindPartnerModal, showCompletionModal, showGXBankModal, showCreatePocketOptionsModal, showBonusPocketModal,
+    aiMode, squadName, squadGoalAmount, squadUsableStartDate, squadUsableEndDate, squadTag, customTag, showCompletionOptions, inviteMichelle, inviteXinying, joinCodeInput, depositAmount, depositFreq, editGoalAmount, gxPaymentAmount, linkedGXPocket, activeSquad, squads, squadGoals, membersData, activities, completedAmount, bonusPocketBalance, totalBalance
   };
 
   // Collect all actions for the Modals component
   const modalActions = {
-    setShowWarning, setShowCreateModal, setShowInviteModal, setShowJoinModal, setShowDepositModal, setShowHistoryModal, setShowMembersModal, setShowEditGoalModal, setShowBindPartnerModal, setShowCompletionModal, setShowGXBankModal, setBoundPartner, setPartnerPenaltyBalance,
+    setShowWarning, setShowCreateModal, setShowInviteModal, setShowJoinModal, setShowDepositModal, setShowHistoryModal, setShowMembersModal, setShowEditGoalModal, setShowBindPartnerModal, setShowCompletionModal, setShowGXBankModal, setBoundPartner, setPartnerPenaltyBalance, setShowCreatePocketOptionsModal, setShowBonusPocketModal, setBonusPocketBalance,
     setSquadName, setSquadGoalAmount, setSquadUsableStartDate, setSquadUsableEndDate, setSquadTag, setCustomTag, setShowCompletionOptions, setInviteMichelle, setInviteXinying, setJoinCodeInput, setDepositAmount, setDepositFreq, setEditGoalAmount, setGxPaymentAmount, setLinkedGXPocket,
     handleCreateSquad, handleJoinSquad, handleDeposit, handleEditGoal, handleProceedTransaction, handleGXBankPayment, handleCompleteToMain, handleCompleteToVault, handleCompleteToPocket, copyToClipboard, getJoinCode,
     getWarningTitle, getWarningBodyText, getProceedButtonText, getCancelButtonText
@@ -587,7 +591,7 @@ export default function App() {
               <View style={[styles.card, styles.mainCard]}><Text style={styles.cardLabel}>Main account</Text><Text style={styles.cardAmount}>RM {totalBalance.toFixed(2)}</Text></View>
               <View style={[styles.card, styles.pocketCard]}>
                 <Text style={styles.cardLabelBold}>Pockets</Text><Text style={styles.cardSubText}>Earn 3.55% p.a.</Text>
-                <TouchableOpacity style={styles.createButton}><Text style={styles.createButtonText}>Create</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.createButton} onPress={() => setShowCreatePocketOptionsModal(true)}><Text style={styles.createButtonText}>Create</Text></TouchableOpacity>
               </View>
             </View>
           </View>

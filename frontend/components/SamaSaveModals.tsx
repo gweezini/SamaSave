@@ -7,12 +7,12 @@ export function SamaSaveModals({ state, actions }: any) {
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const {
-    showWarning, showCreateModal, showInviteModal, showJoinModal, showDepositModal, showHistoryModal, showMembersModal, showEditGoalModal, showBindPartnerModal, showCompletionModal, showGXBankModal,
-    aiMode, squadName, squadGoalAmount, squadUsableStartDate, squadUsableEndDate, squadTag, customTag, showCompletionOptions, inviteMichelle, inviteXinying, joinCodeInput, depositAmount, depositFreq, editGoalAmount, gxPaymentAmount, linkedGXPocket, activeSquad, squads, squadGoals, membersData, activities, completedAmount
+    showWarning, showCreateModal, showInviteModal, showJoinModal, showDepositModal, showHistoryModal, showMembersModal, showEditGoalModal, showBindPartnerModal, showCompletionModal, showGXBankModal, showCreatePocketOptionsModal, showBonusPocketModal,
+    aiMode, squadName, squadGoalAmount, squadUsableStartDate, squadUsableEndDate, squadTag, customTag, showCompletionOptions, inviteMichelle, inviteXinying, joinCodeInput, depositAmount, depositFreq, editGoalAmount, gxPaymentAmount, linkedGXPocket, activeSquad, squads, squadGoals, membersData, activities, completedAmount, bonusPocketBalance, totalBalance
   } = state;
 
   const {
-    setShowWarning, setShowCreateModal, setShowInviteModal, setShowJoinModal, setShowDepositModal, setShowHistoryModal, setShowMembersModal, setShowEditGoalModal, setShowBindPartnerModal, setShowCompletionModal, setShowGXBankModal, setBoundPartner, setPartnerPenaltyBalance,
+    setShowWarning, setShowCreateModal, setShowInviteModal, setShowJoinModal, setShowDepositModal, setShowHistoryModal, setShowMembersModal, setShowEditGoalModal, setShowBindPartnerModal, setShowCompletionModal, setShowGXBankModal, setBoundPartner, setPartnerPenaltyBalance, setShowCreatePocketOptionsModal, setShowBonusPocketModal, setBonusPocketBalance,
     setSquadName, setSquadGoalAmount, setSquadUsableStartDate, setSquadUsableEndDate, setSquadTag, setCustomTag, setShowCompletionOptions, setInviteMichelle, setInviteXinying, setJoinCodeInput, setDepositAmount, setDepositFreq, setEditGoalAmount, setGxPaymentAmount, setLinkedGXPocket,
     handleCreateSquad, handleJoinSquad, handleDeposit, handleEditGoal, handleProceedTransaction, handleGXBankPayment, handleCompleteToMain, handleCompleteToVault, handleCompleteToPocket, copyToClipboard, getJoinCode,
     getWarningTitle, getWarningBodyText, getProceedButtonText, getCancelButtonText
@@ -358,7 +358,7 @@ export function SamaSaveModals({ state, actions }: any) {
                   <Text style={styles.createSubmitText}>📁 Transfer to another Pocket</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.createSubmitButton, { backgroundColor: '#f59e0b' }]} onPress={handleCompleteToVault}>
-                  <Text style={styles.createSubmitText}>🔒 Lock in GX Bonus Pocket</Text>
+                  <Text style={styles.createSubmitText}>🔒 Transfer to GX Bonus Pocket</Text>
                 </TouchableOpacity>
               </View>
             ) : (
@@ -424,6 +424,96 @@ export function SamaSaveModals({ state, actions }: any) {
             </View>
           </View>
         </KeyboardAvoidingView>
+      </Modal>
+      {/* Create Pocket Options Modal */}
+      <Modal visible={showCreatePocketOptionsModal} animationType="slide" transparent={true}>
+        <View style={{ flex: 1, backgroundColor: '#11081f', padding: 20 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 40, marginBottom: 20 }}>
+            <TouchableOpacity onPress={() => setShowCreatePocketOptionsModal(false)}>
+              <Ionicons name="chevron-back" size={28} color="white" />
+            </TouchableOpacity>
+          </View>
+          
+          <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>Create pocket</Text>
+          <Text style={{ color: '#e5e7eb', fontSize: 16, marginBottom: 30, lineHeight: 24 }}>Choose from two pocket options to help you crush your saving goals.</Text>
+
+          <View style={{ backgroundColor: '#1f1b2e', borderRadius: 15, overflow: 'hidden' }}>
+            <View style={{ padding: 20, flexDirection: 'row', alignItems: 'center', opacity: 0.5, borderBottomWidth: 1, borderBottomColor: '#2d1b4e' }}>
+              <MaterialCommunityIcons name="currency-usd-circle-outline" size={30} color="white" />
+              <View style={{ flex: 1, marginLeft: 15 }}>
+                <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold', marginBottom: 4 }}>Savings Pocket</Text>
+                <Text style={{ color: '#9ca3af', fontSize: 14 }}>Earn 2.00% p.a. interest every day.</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
+            </View>
+
+            <TouchableOpacity 
+              style={{ padding: 20, flexDirection: 'row', alignItems: 'center' }}
+              onPress={() => { setShowCreatePocketOptionsModal(false); setShowBonusPocketModal(true); }}
+            >
+              <MaterialCommunityIcons name="clock-fast" size={30} color="white" />
+              <View style={{ flex: 1, marginLeft: 15 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+                  <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold', marginRight: 8 }}>Bonus Pocket</Text>
+                  <View style={{ backgroundColor: '#f43f5e', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 10 }}>
+                    <Text style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}>NEW</Text>
+                  </View>
+                </View>
+                <Text style={{ color: '#9ca3af', fontSize: 14 }}>Get up to 3.55% p.a. interest on your savings.</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color="white" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Bonus Pocket Modal */}
+      <Modal visible={showBonusPocketModal} animationType="slide" transparent={true}>
+        <View style={{ flex: 1, backgroundColor: '#11081f', padding: 20 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 40, marginBottom: 20 }}>
+            <TouchableOpacity onPress={() => setShowBonusPocketModal(false)}>
+              <Ionicons name="chevron-back" size={28} color="white" />
+            </TouchableOpacity>
+          </View>
+          
+          <Text style={{ color: 'white', fontSize: 22, fontWeight: 'bold', marginBottom: 20 }}>Your Bonus Pocket</Text>
+          
+          <View style={{ backgroundColor: '#2d1b4e', borderRadius: 15, padding: 20, marginBottom: 15 }}>
+            <Text style={{ color: 'white', fontSize: 40, fontWeight: 'bold' }}>RM<Text style={{color: '#c4b5fd'}}>{bonusPocketBalance.toFixed(2)}</Text></Text>
+            <Text style={{ color: '#e5e7eb', fontSize: 14, marginTop: 10 }}>Main account balance: RM{totalBalance.toFixed(2)}</Text>
+          </View>
+
+          <View style={{ backgroundColor: '#2d1b4e', borderRadius: 15, padding: 20 }}>
+            <Text style={{ color: '#9ca3af', fontSize: 14, marginBottom: 5 }}>Estimated total (incl. interest)</Text>
+            <Text style={{ color: 'white', fontSize: 22, fontWeight: 'bold', marginBottom: 20 }}>RM {(bonusPocketBalance * 1.0355).toFixed(2)}</Text>
+            
+            <View style={{ width: '100%', height: 1, backgroundColor: '#3f2e60', marginBottom: 20 }} />
+
+            <Text style={{ color: '#9ca3af', fontSize: 14, marginBottom: 5 }}>Total interest</Text>
+            <Text style={{ color: 'white', fontSize: 18, fontWeight: 'bold', marginBottom: 20 }}>3.55% p.a</Text>
+
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
+              <View>
+                <Text style={{ color: '#9ca3af', fontSize: 14, marginBottom: 5 }}>Base interest (% p.a.)</Text>
+                <Text style={{ color: 'white', fontSize: 16 }}>-</Text>
+              </View>
+              <View>
+                <Text style={{ color: '#9ca3af', fontSize: 14, marginBottom: 5 }}>Bonus interest (% p.a.)</Text>
+                <Text style={{ color: '#10b981', fontSize: 16 }}>-</Text>
+              </View>
+            </View>
+
+            <Text style={{ color: '#9ca3af', fontSize: 14, marginBottom: 5 }}>Savings period</Text>
+            <Text style={{ color: 'white', fontSize: 16, marginBottom: 20 }}>-</Text>
+            
+            <View style={{ width: '100%', height: 1, backgroundColor: '#3f2e60', marginBottom: 20 }} />
+
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>View interest rates and tenures</Text>
+              <Ionicons name="chevron-down" size={20} color="white" />
+            </View>
+          </View>
+        </View>
       </Modal>
     </>
   );
