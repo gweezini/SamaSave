@@ -358,7 +358,7 @@ export function SamaSaveModals({ state, actions }: any) {
                   <Text style={styles.createSubmitText}>📁 Transfer to another Pocket</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.createSubmitButton, { backgroundColor: '#f59e0b' }]} onPress={handleCompleteToVault}>
-                  <Text style={styles.createSubmitText}>🔒 Lock in GX Emergency Vault</Text>
+                  <Text style={styles.createSubmitText}>🔒 Lock in GX Bonus Pocket</Text>
                 </TouchableOpacity>
               </View>
             ) : (

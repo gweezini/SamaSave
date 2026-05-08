@@ -259,7 +259,7 @@ export default function App() {
 
   const handleCompleteToVault = () => {
     setShowCompletionModal(false);
-    Alert.alert("Locked In! 🔒", `RM ${completedAmount} has been secured in the GX Emergency Vault at a high interest rate.`);
+    Alert.alert("Locked In! 🔒", `RM ${completedAmount} has been secured in the GX Bonus Pocket at a high interest rate.`);
   };
 
   const handleCompleteToPocket = (targetPocketId: string) => {
