@@ -60,6 +60,20 @@ Collaborative savings spaces designed for shared financial goals. Examples inclu
 
 By turning saving into a shared mission, SamaSave Pockets increase motivation through teamwork and social encouragement.  
 
+**🔄 The Pocket Lifecycle — What Happens When a Goal is Reached?**  
+We don't just stop — we build long-term wealth. When a pocket reaches its end 
+date, the squad celebrates and the pocket securely closes. Users are immediately 
+presented with three options:  
+
+- 💸 **Cash Out:** Transfer funds to the Main Account for immediate use.  
+- 🔥 **Keep the Streak:** Transfer funds directly into another active pocket to 
+  crush the next financial goal without breaking momentum.  
+- 📈 **Grow Wealth:** Reinvest into GX Bonus Pocket to earn high interest 
+  (up to 3.55% p.a.).  
+
+*Behavioural Impact:* By offering an immediate rewarding next step, SamaSave prevents post-goal spending binges and converts short-term saving habits into 
+long-term financial resilience.  
+
 ### 🤖 2. AI Sensitivity Mode — The Impulse Intercept
 An AI-powered intervention system designed to reduce impulsive spending before transactions happen. Users customize their strictness:    
 
