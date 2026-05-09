@@ -32,7 +32,7 @@ SamaSave turns financial discipline into an engaging social system. Built around
 
 ## 🔥 Key Features (Prototype)  
 
-### 🎯 1. Sync-Pockets  
+### 🎯 1. SamaSave Pockets  
 Collaborative savings spaces designed for shared financial goals. Examples include:  
 - Japan Trip 2026 🇯🇵  
 - Graduation Funds 🎓   
