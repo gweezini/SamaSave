@@ -1,4 +1,4 @@
-# 🏆 SamaSave (Powered by GXBank)  
+# 🏆 SamaSave (Integrated into GXBank)  
 **"Sama-sama Save, Sama-sama Safe."**  
 
 SamaSave transforms saving money into a multiplayer social experience for Malaysian youth. Built for tertiary students and fresh graduates, it combines AI, behavioural economics, and gamification to turn financial resilience into a daily habit instead of an afterthought.  
