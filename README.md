@@ -138,7 +138,24 @@ Instead of only tracking money, SamaSave actively shapes financial behaviour.
 - Shared collaborative saving architecture supports scalable social finance interactions.  
 - Optimized for high engagement, instant feedback, and mobile-first usability.  
 
----
+---  
+
+🛠️ How to Run the Prototype Locally  
+Our prototype is built purely on React Native (Expo) for easy cross-platform testing. To run it on your local machine:  
+
+1. Clone the repository and navigate to the frontend folder:  
+> cd frontend  
+
+2. Install the dependencies:  
+> npm install  
+
+3. Start the Expo development server:  
+> npx expo start  
+
+4. Download the Expo Go app on your iOS/Android device and scan the QR code to experience SamaSave live  
+
+---  
+
 
 ## 🌱 Future Scalability  
 - **Merchant & Brand Partnerships (B2B2C):**  
