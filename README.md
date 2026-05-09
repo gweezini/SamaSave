@@ -6,6 +6,21 @@ SamaSave transforms saving money into a multiplayer social experience for Malays
 Rather than functioning as a passive banking tool, SamaSave actively guides users toward smarter financial decisions through social accountability, weekly saving challenges, and AI-powered spending interventions.  
  
 ---  
+### 🛠️ How to Run the Prototype Locally  
+Our prototype is built purely on React Native (Expo) for easy cross-platform testing. To run it on your terminal:   
+
+1. Clone the repository and navigate to the frontend folder:  
+> cd frontend  
+
+2. Install the dependencies:  
+> npm install  
+
+3. Start the Expo development server:  
+> npx expo start  
+
+4. Download the Expo Go app on your iOS/Android device and scan the QR code to experience SamaSave live
+
+--- 
 
 ## 💡 The Problem  
 Despite high internet penetration, many Malaysian students and early-career graduates struggle with impulsive spending and poor saving habits.  
@@ -144,23 +159,6 @@ Instead of only tracking money, SamaSave actively shapes financial behaviour.
 - Optimized for high engagement, instant feedback, and mobile-first usability.  
 
 ---  
-
-### 🛠️ How to Run the Prototype Locally  
-Our prototype is built purely on React Native (Expo) for easy cross-platform testing. To run it on your terminal:   
-
-1. Clone the repository and navigate to the frontend folder:  
-> cd frontend  
-
-2. Install the dependencies:  
-> npm install  
-
-3. Start the Expo development server:  
-> npx expo start  
-
-4. Download the Expo Go app on your iOS/Android device and scan the QR code to experience SamaSave live  
-
----  
-
 
 ## 🌱 Future Scalability  
 - **Merchant & Brand Partnerships (B2B2C):**  
