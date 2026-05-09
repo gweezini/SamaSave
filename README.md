@@ -148,7 +148,9 @@ Instead of only tracking money, SamaSave actively shapes financial behaviour.
 - **Proactive AI Financial Coaching:**  
   Evolving the AI from just intercepting impulsive purchases to proactively analyzing spending habits. The AI could suggest personalized micro-investments or warn users about upcoming subscription renewals before they are charged  
 - **Gen-Z Credit Score Building:**  
-  Successfully completing Sync-Pocket goals and avoiding impulse penalties can be used as alternative data to build a user's early credit score. This helps young users who lack credit history to easily access future loans or mortgages  
+  Successfully completing Sync-Pocket goals and avoiding impulse penalties can be used as alternative data to build a user's early credit score. This helps young users who lack credit history to easily access future loans or mortgages
+
+---  
 
 ### 🌍 Real-World Impact  
 SamaSave aims to reduce early-stage debt accumulation among Malaysian youth. Rather than reacting to debt after it happens, SamaSave focuses on behavioural prevention before financial problems escalate.  
