@@ -151,12 +151,15 @@ Instead of only tracking money, SamaSave actively shapes financial behaviour.
 ---  
 
 ## 🛠️ Technology & System Approach  
-- Built with **React Native (Expo)** for a smooth cross-platform mobile experience.  
-- Designed using a Gen Z-focused neumorphic dark UI.  
-- Real-time leaderboard synchronization enables instant ranking updates and live competition effects.  
-- AI-driven spending intervention logic dynamically adjusts saving friction based on user behaviour.  
-- Shared collaborative saving architecture supports scalable social finance interactions.  
-- Optimized for high engagement, instant feedback, and mobile-first usability.  
+- 1. Frontend (The User Interface)  
+     Designed as highly adaptable, modular front-end components built on React Native. This allows SamaSave to plug seamlessly into GXBank’s existing application framework, ensuring a perfectly consistent user experience without requiring a full app rebuild.  
+ - 2. Backend & Scalability (The Engine)  
+    Details: Built using a lightweight cloud-native microservice architecture. It handles high-traffic, real-time data (like the Savage Activity Feed and Leaderboards) independently, ensuring it never slows down or interferes with GXBank’s core banking functions even during Monday traffic spikes.  
+- 3. AI & Data Processing (The "Brain")  
+     Leverages Google Cloud’s Vertex AI and Gemini models alongside MCC (Merchant Category Code) smart routing to contextually analyze real-time spending habits. The advanced AI engine evaluates transaction data to accurately detect non-essential purchases, instantly triggering the Gentle, Strict, or Devil accountability modes.  
+ - 4.  Security & Ecosystem (The Banking Integration)  
+      Details: Built directly into the existing GXBank infrastructure. SamaSave securely maps Sync-Pockets to Virtual Accounts (VAs), leveraging GXBank’s internal core ledger for instant, zero-latency fund transfers between pockets, fully inheriting the bank's existing enterprise-grade security protocols.  
+
 
 ---  
 
