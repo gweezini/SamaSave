@@ -150,18 +150,18 @@ Instead of only tracking money, SamaSave actively shapes financial behaviour.
 
 ---  
 
-## 🛠️ Technology & System Approach  
-1. **Frontend (The User Interface)**  
-     Designed as highly adaptable, modular front-end components built on React Native. This allows SamaSave to plug seamlessly into GXBank’s existing application framework, ensuring a perfectly consistent user experience without requiring a full app rebuild.
+## 🛠️ Technology & System Approach    
+1. **Frontend: Component-Based Architecture**  
+     Built using a Micro-Frontend approach. Instead of a standalone app, SamaSave acts as an independent React-based module that injects directly into GXBank’s existing UI, ensuring zero compatibility issues  
    
-2. **Backend & Scalability (The Engine)**  
-    Built using a lightweight cloud-native microservice architecture. It handles high-traffic, real-time data (like the Savage Activity Feed and Leaderboards) independently, ensuring it never slows down or interferes with GXBank’s core banking functions even during Monday traffic spikes.
+2. **Backend: Event-Driven Microservices**  
+     Uses an Event-Driven Architecture (Pub/Sub). When a user makes an impulse purchase, it triggers real-time events to instantly update the Savage Activity Feed and Leaderboards without lagging the main bank servers  
+
+3. **AI Engine: Google Vertex AI Integration**  
+     Uses Google Cloud’s Vertex AI and Gemini models to analyze transaction metadata in real time. It quickly categorizes spending habits to trigger the Gentle, Strict, or Devil AI penalty modes  
    
-3. **AI & Data Processing (The "Brain")**  
-     Leverages Google Cloud’s Vertex AI and Gemini models alongside MCC (Merchant Category Code) smart routing to contextually analyze real-time spending habits. The advanced AI engine evaluates transaction data to accurately detect non-essential purchases, instantly triggering the Gentle, Strict, or Devil accountability modes.
-   
-4.  **Security & Ecosystem (The Banking Integration)**  
-   Built directly into the existing GXBank infrastructure. SamaSave securely maps SamaSave Pockets to Virtual Accounts (VAs), leveraging GXBank’s internal core ledger for instant, zero-latency fund transfers between pockets, fully inheriting the bank's existing enterprise-grade security protocols.  
+4.  **Security: Core Ledger API Integration**  
+   Connects directly to GXBank’s Internal Core Ledger API. This allows SamaSave to instantly deduct penalties and move money between pockets using the bank's existing, PCI-compliant infrastructure  
 
 
 ---  
