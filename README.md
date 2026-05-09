@@ -112,7 +112,7 @@ Instead of making saving a private activity, SamaSave uses social visibility to 
 - Community-driven motivation  
 
 ### 💳 7. Smart Card Linkage (GXBank Ecosystem Integration)  
-To bridge the gap between savings and real-world spending, SamaSave allows users to link their physical or virtual GX Card directly to a specific Sync-Pocket.  
+To bridge the gap between savings and real-world spending, SamaSave allows users to link their physical or virtual GX Card directly to a specific SamaSave Pocket.  
 
 - Dynamic Payment Routing: Going on the Japan Trip? Link your card to the "Japan Trip 2026" pocket. All card swipes will prioritize deducting from this specific pocket rather than your main account balance.  
 - Seamless Ecosystem: This demonstrates a direct open-banking integration, allowing users to spend the money they've saved collectively without manually transferring funds back and forth.  
@@ -168,7 +168,7 @@ Instead of only tracking money, SamaSave actively shapes financial behaviour.
 - **Proactive AI Financial Coaching:**  
   Evolving the AI from just intercepting impulsive purchases to proactively analyzing spending habits. The AI could suggest personalized micro-investments or warn users about upcoming subscription renewals before they are charged  
 - **Gen-Z Credit Score Building:**  
-  Successfully completing Sync-Pocket goals and avoiding impulse penalties can be used as alternative data to build a user's early credit score. This helps young users who lack credit history to easily access future loans or mortgages
+  Successfully completing SamaSave Pocket goals and avoiding impulse penalties can be used as alternative data to build a user's early credit score. This helps young users who lack credit history to easily access future loans or mortgages
 
 ---  
 
