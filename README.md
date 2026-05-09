@@ -26,7 +26,7 @@ SamaSave turns financial discipline into an engaging social system. Built around
 - Social accountability  
 - Gamified saving mechanics  
 
-**The goal is simple:**Turn "Zero Consequences" into immediate financial and social consequences, making saving visible, rewarding, and socially motivating.    
+**The goal is simple:** Turn "Zero Consequences" into immediate financial and social consequences, making saving visible, rewarding, and socially motivating.    
 
 ---  
 
