@@ -18,7 +18,7 @@ Our prototype is built purely on React Native (Expo) for easy cross-platform tes
 3. Start the Expo development server:  
 > npx expo start  
 
-4. Download the Expo Go app on your iOS/Android device and scan the QR code to experience SamaSave live. Ensure that the computer you use to run the prototype and your phone with the Expo Go app is connected to the same WiFi.
+4. Download the Expo Go app on your iOS/Android device and scan the QR code to experience SamaSave live. Ensure that the computer you use to run the prototype and your phone with the Expo Go app is connected to the same WiFi before scanning the QR code.
 
 --- 
 
