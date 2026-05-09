@@ -58,7 +58,7 @@ Collaborative savings spaces designed for shared financial goals. Examples inclu
 - Group saving milestones  
 - Visual collective progress bars  
 
-By turning saving into a shared mission, Sync-Pockets increase motivation through teamwork and social encouragement.  
+By turning saving into a shared mission, SamaSave Pockets increase motivation through teamwork and social encouragement.  
 
 ### 🤖 2. AI Sensitivity Mode — The Impulse Intercept
 An AI-powered intervention system designed to reduce impulsive spending before transactions happen. Users customize their strictness:    
@@ -162,7 +162,7 @@ Instead of only tracking money, SamaSave actively shapes financial behaviour.
 
 ## 🌱 Future Scalability  
 - **Merchant & Brand Partnerships (B2B2C):**  
-  Brands like Agoda, AirAsia, or Shopee can sponsor specific Sync-Pockets. For example, if a squad successfully hits their "Japan Trip" goal, Agoda can sponsor a 10% discount voucher. This creates a powerful new merchant-funded reward ecosystem for GXBank  
+  Brands like Agoda, AirAsia, or Shopee can sponsor specific SamaSave Pockets. For example, if a squad successfully hits their "Japan Trip" goal, Agoda can sponsor a 10% discount voucher. This creates a powerful new merchant-funded reward ecosystem for GXBank  
 - **University & Corporate Leagues:**  
   Scaling the "Resilience League" from small friend-groups to massive, campus-wide or company-wide saving competitions (e.g., UTM’s University Savings League). This allows GXBank to acquire thousands of young users in a single campaign  
 - **Proactive AI Financial Coaching:**  
