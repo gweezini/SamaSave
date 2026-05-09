@@ -161,7 +161,7 @@ Instead of only tracking money, SamaSave actively shapes financial behaviour.
      Leverages Google Cloud’s Vertex AI and Gemini models alongside MCC (Merchant Category Code) smart routing to contextually analyze real-time spending habits. The advanced AI engine evaluates transaction data to accurately detect non-essential purchases, instantly triggering the Gentle, Strict, or Devil accountability modes.
    
 4.  **Security & Ecosystem (The Banking Integration)**  
-   Built directly into the existing GXBank infrastructure. SamaSave securely maps Sync-Pockets to Virtual Accounts (VAs), leveraging GXBank’s internal core ledger for instant, zero-latency fund transfers between pockets, fully inheriting the bank's existing enterprise-grade security protocols.  
+   Built directly into the existing GXBank infrastructure. SamaSave securely maps SamaSave Pockets to Virtual Accounts (VAs), leveraging GXBank’s internal core ledger for instant, zero-latency fund transfers between pockets, fully inheriting the bank's existing enterprise-grade security protocols.  
 
 
 ---  
