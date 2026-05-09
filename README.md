@@ -140,7 +140,7 @@ Instead of only tracking money, SamaSave actively shapes financial behaviour.
 
 ---  
 
-🛠️ How to Run the Prototype Locally  
+### 🛠️ How to Run the Prototype Locally  
 Our prototype is built purely on React Native (Expo) for easy cross-platform testing. To run it on your local machine:  
 
 1. Clone the repository and navigate to the frontend folder:  
