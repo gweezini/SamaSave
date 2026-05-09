@@ -109,11 +109,11 @@ To bridge the gap between savings and real-world spending, SamaSave allows users
 Aligning with Gen-Z market behaviour and scalable customer acquisition.  
 
 **Target Audience:**  
-Digital-native Malaysian tertiary students and Gen-Z professionals who struggle with impulse buying and prefer gamified experiences over traditional finance tools  
+ Digital-native Malaysian tertiary students and Gen-Z professionals who struggle with impulse buying and prefer gamified experiences over traditional finance  tools  
 **Zero-Cost Customer Acquisition (Viral Loop):**   
-Our 24-hour "Solo Pocket Auto-Close" rule forces users to invite peers to unlock interest rewards. This builds a powerful, self-sustaining viral loop where every new user acts as a promoter  
+ Our 24-hour "Solo Pocket Auto-Close" rule forces users to invite peers to unlock interest rewards. This builds a powerful, self-sustaining viral loop where      every new user acts as a promoter  
 **Commercial Potential:**  
-High Weekly Active Users (WAU) is driven by the Monday leaderboard resets, while the Savage Activity Feed creates sticky Daily Active Users (DAU) who constantly check the app for social updates. Paired with sustainable reward economics (capped interest boosts), this ensures incredibly strong long-term user retention  
+ High Weekly Active Users (WAU) is driven by the Monday leaderboard resets, while the Savage Activity Feed creates sticky Daily Active Users (DAU) who constantly check the app for social updates. Paired with sustainable reward economics (capped interest boosts), this ensures incredibly strong long-term user retention  
 
 ---  
 
