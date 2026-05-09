@@ -31,6 +31,7 @@ export default function App() {
   // ==========================================
   // CORE FINANCIAL STATES
   // ==========================================
+  const roundMoney = (amount: number) => Math.round(amount * 100) / 100;
   const [totalBalance, setTotalBalance] = useState(1500.00); 
   const [partnerPenaltyBalance, setPartnerPenaltyBalance] = useState(0); 
   const [boundPartner, setBoundPartner] = useState<string | null>(null);
@@ -109,7 +110,7 @@ export default function App() {
       Alert.alert("Error", "Give your squad a name!");
       return;
     }
-    const newSquadId = squadName.replace(/\s+/g, '');
+    const newSquadId = squadName.replace(/\s+/g, '') + '_' + Date.now();
     const newSquadName = `${squadName}`;
     const targetAmount = parseFloat(squadGoalAmount) || 1000; 
     
@@ -197,13 +198,13 @@ export default function App() {
       return;
     }
 
-    setTotalBalance(prev => prev - amount);
+    setTotalBalance(prev => roundMoney(prev - amount));
 
     setMembersData((prev: any) => {
       const squadMembers = prev[activeSquad] || [];
       const updatedMembers = squadMembers.map((m: any) => {
         if (m.id === 'z') {
-          return { ...m, saved: m.saved + amount, weekly: (m.weekly || 0) + amount };
+          return { ...m, saved: roundMoney(m.saved + amount), weekly: roundMoney((m.weekly || 0) + amount) };
         }
         return m;
       });
@@ -249,23 +250,28 @@ export default function App() {
   };
 
   const handleCompleteToMain = () => {
-    setTotalBalance((prev: number) => prev + completedAmount);
+    setTotalBalance((prev: number) => roundMoney(prev + completedAmount));
     setShowCompletionModal(false);
     Alert.alert("Success", `RM ${completedAmount} transferred to Main Account.`);
   };
 
   const handleCompleteToVault = () => {
-    setBonusPocketBalance(prev => prev + completedAmount);
+    setBonusPocketBalance(prev => roundMoney(prev + completedAmount));
     setShowCompletionModal(false);
     Alert.alert("Transferred! 📁", `RM ${completedAmount} has been transferred to the GX Bonus Pocket.`);
   };
 
   const handleCompleteToPocket = (targetPocketId: string) => {
+    const targetSquad = squads.find((s: any) => s.id === targetPocketId);
+    if (targetSquad?.isCompleted) {
+      Alert.alert("Error", "You cannot transfer funds to an already completed pocket.");
+      return;
+    }
     setMembersData((prev: any) => {
       const targetMembers = prev[targetPocketId] || [];
       const updatedMembers = targetMembers.map((m: any) => {
         if (m.id === 'z') {
-          return { ...m, saved: m.saved + completedAmount, weekly: (m.weekly || 0) + completedAmount };
+          return { ...m, saved: roundMoney(m.saved + completedAmount), weekly: roundMoney((m.weekly || 0) + completedAmount) };
         }
         return m;
       });
@@ -328,36 +334,45 @@ export default function App() {
     const itemCost = 50.00; 
 
     if (aiMode === 'Gentle') {
-      setTotalBalance((prev: number) => prev - itemCost);
+      if (totalBalance < itemCost) {
+        Alert.alert("Failed", "Insufficient balance to proceed.");
+        return;
+      }
+      setTotalBalance((prev: number) => roundMoney(prev - itemCost));
       Alert.alert("Action Taken", `Transaction approved. RM ${itemCost.toFixed(2)} deducted from your account.`, [{ text: "OK", onPress: () => setShowWarning(false) }]);
     
-    } else if (aiMode === 'Strict') {
-      const penalty = itemCost * 0.03; // 3% penalty = 1.50
-      setTotalBalance((prev: number) => prev - (itemCost + penalty));
-      setPartnerPenaltyBalance((prev: number) => prev + penalty); 
-
-      Alert.alert("Action Taken", `Transaction approved. RM ${(itemCost + penalty).toFixed(2)} deducted. RM ${penalty.toFixed(2)} sent to ${boundPartner} as a penalty!`, [{ text: "OK", onPress: () => setShowWarning(false) }]);
-    
     } else {
-      const penalty = itemCost * 0.08; // 8% penalty = 4.00
-      setTotalBalance((prev: number) => prev - (itemCost + penalty));
-      setPartnerPenaltyBalance((prev: number) => prev + penalty); 
+      const penaltyRate = aiMode === 'Strict' ? 0.03 : 0.08;
+      const penalty = roundMoney(itemCost * penaltyRate);
+      const totalDeduction = roundMoney(itemCost + penalty);
 
-      const penaltyActivity = {
-        id: Date.now(),
-        user: 'Zini',
-        msg: `Look everyone! Zini just made an impulse purchase! 🔥`,
-        cat: 'Shame Board',
-        icon: 'fire',
-        color: '#f43f5e' 
-      };
+      if (totalBalance < totalDeduction) {
+        Alert.alert("Failed", "Insufficient balance to cover the item and the Resilience Tax.");
+        return;
+      }
+      
+      setTotalBalance((prev: number) => roundMoney(prev - totalDeduction));
+      setPartnerPenaltyBalance((prev: number) => roundMoney(prev + penalty)); 
+      
+      if (aiMode === 'Strict') {
+        Alert.alert("Action Taken", `Transaction approved. RM ${totalDeduction.toFixed(2)} deducted. RM ${penalty.toFixed(2)} sent to ${boundPartner} as a penalty!`, [{ text: "OK", onPress: () => setShowWarning(false) }]);
+      } else {
+        const penaltyActivity = {
+          id: Date.now(),
+          user: 'Zini',
+          msg: `Look everyone! Zini just made an impulse purchase! 🔥`,
+          cat: 'Shame Board',
+          icon: 'fire',
+          color: '#f43f5e' 
+        };
 
-      setActivities((prev: any) => ({
-        ...prev,
-        All: [penaltyActivity, ...(prev.All || [])]
-      }));
+        setActivities((prev: any) => ({
+          ...prev,
+          All: [penaltyActivity, ...(prev.All || [])]
+        }));
 
-      Alert.alert("Action Taken", `Transaction approved. RM ${(itemCost + penalty).toFixed(2)} deducted. RM ${penalty.toFixed(2)} sent to ${boundPartner} and broadcasted!`, [{ text: "OK", onPress: () => setShowWarning(false) }]);
+        Alert.alert("Action Taken", `Transaction approved. RM ${totalDeduction.toFixed(2)} deducted. RM ${penalty.toFixed(2)} sent to ${boundPartner} and broadcasted!`, [{ text: "OK", onPress: () => setShowWarning(false) }]);
+      }
     }
   };
 
@@ -374,7 +389,7 @@ export default function App() {
         Alert.alert("Failed", "Insufficient balance in Main Account.");
         return;
       }
-      setTotalBalance(prev => prev - amount);
+      setTotalBalance(prev => roundMoney(prev - amount));
       Alert.alert("Success", `RM ${amount.toFixed(2)} swiped via GXBank from Main Account.`);
     } else {
       const ziniData = (membersData[linkedGXPocket] || []).find((m: any) => m.id === 'z') || { saved: 0 };
@@ -387,7 +402,7 @@ export default function App() {
         const squadMembers = prev[linkedGXPocket] || [];
         const updatedMembers = squadMembers.map((m: any) => {
           if (m.id === 'z') {
-            return { ...m, saved: m.saved - amount };
+            return { ...m, saved: roundMoney(m.saved - amount) };
           }
           return m;
         });
@@ -418,8 +433,8 @@ export default function App() {
   // Renders the progress bar for the currently active squad's savings goal.
   const renderGoalProgress = () => {
     const goal = squadGoals[activeSquad] || { title: 'New Squad Goal', target: 1000 };
-    const currentSquad = squads.find((s: any) => s.id === activeSquad) || {};
-    const isCompleted = currentSquad.isCompleted;
+    const currentSquad = squads.find((s: any) => s.id === activeSquad);
+    const isCompleted = currentSquad ? currentSquad.isCompleted : false;
     
     const ziniData = (membersData[activeSquad] || []).find((m: any) => m.id === 'z') || { saved: 0 };
     const currentSaved = ziniData.saved;

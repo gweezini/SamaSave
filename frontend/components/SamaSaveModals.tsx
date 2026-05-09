@@ -508,7 +508,7 @@ export function SamaSaveModals({ state, actions }: any) {
 
           <View style={{ backgroundColor: '#1f1b2e', borderRadius: 15, overflow: 'hidden' }}>
             <View style={{ padding: 20, flexDirection: 'row', alignItems: 'center', opacity: 0.5, borderBottomWidth: 1, borderBottomColor: '#2d1b4e' }}>
-              <MaterialCommunityIcons name="currency-usd-circle-outline" size={30} color="white" />
+              <MaterialCommunityIcons name="currency-usd" size={30} color="white" />
               <View style={{ flex: 1, marginLeft: 15 }}>
                 <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold', marginBottom: 4 }}>Savings Pocket</Text>
                 <Text style={{ color: '#9ca3af', fontSize: 14 }}>Earn 2.00% p.a. interest every day.</Text>

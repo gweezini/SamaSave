@@ -50,6 +50,7 @@ class TransactionRequest(BaseModel):
     current_balance: float
     override_history_24h: int
     transaction_time: str  # Format "HH:MM"
+    ai_mode: str = "Strict"
 
 # =========================
 # PRECISION SCORING ENGINE
@@ -92,14 +93,13 @@ def calculate_impulse_score(tx: TransactionRequest):
 # =========================
 # BEHAVIORAL SIN TAX (RESILIENCE TAX)
 # =========================
-def calculate_sin_tax(amount: float, score: int):
+def calculate_sin_tax(amount: float, ai_mode: str):
     """
-    Behavioral pricing: higher impulsiveness correlates with a higher penalty 
-    rate to discourage friction-less spending and encourage reflection.
+    Behavioral pricing: strict mode charges 3%, devil mode charges 8%.
     """
-    if score >= 85: rate = 0.15
-    elif score >= 70: rate = 0.10
-    else: rate = 0.05
+    if ai_mode == "Devil": rate = 0.08
+    elif ai_mode == "Strict": rate = 0.03
+    else: rate = 0.00
     return round(amount * rate, 2)
 
 # =========================
@@ -133,7 +133,7 @@ async def check_transaction(request: TransactionRequest):
     
     # Dynamic Risk Assessment
     risk_level = "High" if score >= 75 else "Medium" if score >= 50 else "Low"
-    sin_tax = calculate_sin_tax(request.amount, score)
+    sin_tax = calculate_sin_tax(request.amount, request.ai_mode)
     ai_reason = await get_ai_reason(request, score)
 
     # Real-time Logging for Audit and Model Tuning
