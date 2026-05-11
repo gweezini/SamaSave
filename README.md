@@ -6,10 +6,14 @@ SamaSave transforms saving money into a multiplayer social experience for Malays
 Rather than functioning as a passive banking tool, SamaSave actively guides users toward smarter financial decisions through social accountability, weekly saving challenges, and AI-powered spending interventions. 
 
 ---
-## 📊 Supplementary Material: Pitch Deck
-> 📥 **[Click Here to View / Download our Full Pitch Deck (PDF)](https://github.com/gweezini/SamaSave/blob/main/UTM%20Hackathon%20Pitch%20Deck.pdf)** > *(Note: This is an additional document we prepared to provide deeper insights into our business model, behavioral mechanics, and product vision!)*
 
+## 🎬 Project Presentation & Demo
 
+> 🎥 **[Watch our 5-Minute Pitch Video Here](YOUR_VIDEO_LINK_HERE)**
+> 
+> 📥 **[View / Download our Full Pitch Deck (PDF)](https://github.com/gweezini/SamaSave/blob/main/UTM%20Hackathon%20Pitch%20Deck.pdf)**
+> 
+> *(Note: The Pitch Deck is an additional document we proactively prepared to provide deeper insights into our business model, behavioral mechanics, and product vision!)*
 ---  
 ### 🛠️ How to Run the Prototype Locally  
 Our prototype is built purely on React Native (Expo) for easy cross-platform testing. To run it on your terminal:   
