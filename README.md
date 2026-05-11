@@ -3,8 +3,13 @@
 
 SamaSave transforms saving money into a multiplayer social experience for Malaysian youth. Built for tertiary students and fresh graduates, it combines AI, behavioural economics, and gamification to turn financial resilience into a daily habit instead of an afterthought.  
 
-Rather than functioning as a passive banking tool, SamaSave actively guides users toward smarter financial decisions through social accountability, weekly saving challenges, and AI-powered spending interventions.  
- 
+Rather than functioning as a passive banking tool, SamaSave actively guides users toward smarter financial decisions through social accountability, weekly saving challenges, and AI-powered spending interventions. 
+
+---
+## 📊 Supplementary Material: Pitch Deck
+> 📥 **[Click Here to View / Download our Full Pitch Deck (PDF)](./SamaSave_PitchDeck.pdf)** > *(Note: This is an additional document we prepared to provide deeper insights into our business model, behavioral mechanics, and product vision!)*
+
+
 ---  
 ### 🛠️ How to Run the Prototype Locally  
 Our prototype is built purely on React Native (Expo) for easy cross-platform testing. To run it on your terminal:   
