@@ -7,7 +7,7 @@ Rather than functioning as a passive banking tool, SamaSave actively guides user
 
 ---
 ## 📊 Supplementary Material: Pitch Deck
-> 📥 **[Click Here to View / Download our Full Pitch Deck (PDF)]([./SamaSave_PitchDeck.pdf](https://github.com/gweezini/SamaSave/blob/main/UTM%20Hackathon%20Pitch%20Deck.pdf))** > *(Note: This is an additional document we prepared to provide deeper insights into our business model, behavioral mechanics, and product vision!)*
+> 📥 **[Click Here to View / Download our Full Pitch Deck (PDF)](https://github.com/gweezini/SamaSave/blob/main/UTM%20Hackathon%20Pitch%20Deck.pdf)** > *(Note: This is an additional document we prepared to provide deeper insights into our business model, behavioral mechanics, and product vision!)*
 
 
 ---  
